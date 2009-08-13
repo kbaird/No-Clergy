@@ -1,0 +1,45 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!--
+This is simply a sample feedback file with divergent values.
+I find it useful for testing.
+-->
+<head><title>No Clergy Feedback Form</title></head>
+<body>
+<h1><cite>No Clergy</cite> Feedback Form</h1>
+<!--begin-->
+<pre>
+stick_pitch = -5
+stick_pitchvar = -5
+stick_dur = 5
+stick_durvar = -5
+stick_rest = 5
+stick_restvar = -5
+stick_art = -5
+stick_artvar = -5
+stick_dyn = 5
+stick_dynvar = -5
+
+eh_pitch = 5
+eh_pitchvar = -5
+eh_dur = -5
+eh_durvar = -5
+eh_rest = -5
+eh_restvar = -5
+eh_art = 5
+eh_artvar = -5
+eh_dyn = -5
+eh_dynvar = -5
+end 1 item
+</pre>
+
+<hr />
+<p>
+Return to the <strong>No Clergy</strong> 
+<a href="./">Audience Feedback Form</a>.
+</p>
+
+</body>
+</html>

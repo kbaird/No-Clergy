@@ -1,0 +1,50 @@
+<div id="navAlpha">
+
+<h3>Links of Interest</h3>
+<p style="text-align:center;">
+<a href="./">Turn off links</a>
+</p>
+<hr />
+
+<ul style="list-style-type: none">
+
+<li class="main">
+<acronym title="GNU's Not Unix!">GNU</acronym> 
+<a href="http://www.lilypond.org">Lilypond</a>
+  <ul style="list-style-type: none">
+    <li>Samples: 
+      <ul style="list-style-type: none">
+	<li><a href="./tpt/">Trumpet sample</a></li>
+	<li><a href="./vn/">Violin sample</a></li>
+      </ul>
+    </li>
+  </ul>
+</li>
+
+<li class="main"><a href="http://www.musicxml.org/">Music 
+<acronym title="eXtensible Markup Language">XML</acronym>
+</a></li>
+
+<li class="main">
+<a href="http://www.w3.org/TR/REC-xml/">
+<acronym title="eXtensible Markup Language">XML</acronym>
+1.0 W3C Recommendation</a>
+</li>
+
+<li class="main">
+<a href="http://en.wikipedia.org/wiki/Markov_chain">
+Markov Chains</a></li>
+
+</ul>
+
+<hr />
+
+<p>
+<cite>No Clergy</cite> is the Doctoral Dissertation piece at the 
+<a href="http://www.music.buffalo.edu/">University at Buffalo</a> of 
+<a href="http://kevinbaird.net/">Kevin Baird</a>. Work on it 
+continues at 
+<a href="http://rubyforge.org/projects/noclergy/">Rubyforge</a>.
+</p>
+    
+</div>

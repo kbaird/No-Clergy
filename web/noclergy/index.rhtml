@@ -1,0 +1,44 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<%
+require 'noclergy/web_form_functions'
+require 'cgi'
+cgi = CGI.new()
+inst = cgi.params['inst'].to_s()
+li = cgi.params['li'].to_s()
+
+print File.open('./includes/prewith.incl').readlines.to_s()
+
+if (li == 'yes')
+  print File.open('./includes/links.incl').readlines.to_s()
+end
+%>
+
+<div class="content">
+
+<%
+if (inst.size < 1)
+  print show_insts()
+else
+  print show_form(inst)
+end
+%>
+
+<hr />
+
+<p>
+<a href="./feedback/feedback.html">
+View previously submitted feedback</a>
+</p>
+
+</div>
+
+<%
+print File.open('./includes/postwith.incl').readlines.to_s()
+%>
+
+</body>
+</html>
