@@ -10,6 +10,7 @@ add_to_modules.conf to /etc/apache/modules.conf (or equivalent for your system).
 Debian packages to have installed:
 apache
 libapache-mod-ruby
+libapache-ruby1.8
 libxml-parser-ruby1.8
 lilypond
 ruby
