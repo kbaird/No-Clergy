@@ -27,12 +27,12 @@ Outputs a Lilypond[http://lilypond.org]-compliant header.
 =end
 class Header < NoClergyObject
 
-  COMPOSER = 'Kevin C. Baird'
-  COPYRIGHT_YEAR = 2005
-  LILYPOND_VERSION = '2.2.6'
+  COMPOSER             = 'Kevin C. Baird'
+  COPYRIGHT_YEAR       = '2005-2009'
+  LILYPOND_VERSION     = '2.12.0'
   LY_GLOBAL_STAFF_SIZE = 23
-  RELEASE_TEXT = 'Released under the GNU General Public License (http://www.gnu.org)'
-  SHOW_SUBTITLE = false
+  RELEASE_TEXT         = 'Released under the GNU General Public License (http://www.gnu.org)'
+  SHOW_SUBTITLE        = false
 
 =begin rdoc
 Calls NoClergyObject#add_variables

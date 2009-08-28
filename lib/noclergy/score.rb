@@ -293,11 +293,11 @@ including paper definitions and the MIDI block.
 =end
 	def print_close()
 		return <<END_OF_PRINT_CLOSE
-
-  } % end notes
-
 #{Paper.new(@tempoI).ly_output}
+} % end new Voice
+} % end new Staff
 } % end score
+} % end book
 END_OF_PRINT_CLOSE
 	end # print_close
 
@@ -305,17 +305,20 @@ END_OF_PRINT_CLOSE
 Outputs Lilypond[http://lilypond.org/]-compliant starting boilerplate.
 =end
 	def print_open()
-		return <<END_OF_PRINT_OPEN
+		### FIXME NOW: FInd a way to bring these back or remove them more cleanly
+    return <<END_OF_PRINT_OPEN
+\\book {
 \\score {
-  \\notes { 
-    \\stemBoth
-    \\override Voice.DynamicText #'font-size = #-3
-    \\override Voice.SpacingSpanner #'shortest-duration-space = #50.0
-    \\tupletUp 
-    \\set autoBeaming = ##t
-    \\override Staff.DynamicLineSpanner #'padding = #2.4
-    \\override Staff.TupletBracket #'padding = #1.8
-    \\set midiInstrument = "#{@inst.fullname}"
+  \\new Staff {
+    \\new Voice {
+    %\\stemNeutral
+    %\\override Voice.DynamicText #'font-size = #-3
+    %\\override Voice.SpacingSpanner #'shortest-duration-space = #50.0
+    %\\tupletUp
+    %\\set autoBeaming = ##t
+    %\\override Staff.DynamicLineSpanner #'padding = #2.4
+    %\\override Staff.TupletBracket #'padding = #1.8
+    %\\set midiInstrument = "#{@inst.fullname}"
 
 #{print_tempo_override if @tempoI > 0}
     \\clef #{@inst.clef}
@@ -452,8 +455,8 @@ Lilypond[http://lilypond.org]-compliant format.
 
 	def print_tempo_override()
 		output =<<END_OF_TEMPO_OVERRIDE
-  \\override Score.MetronomeMark #'padding = #5
-    \\tempo 8=#{@tempoI.to_s}
+  %\\override Score.MetronomeMark #'padding = #5
+  %  \\tempo 8=#{@tempoI.to_s}
 END_OF_TEMPO_OVERRIDE
 		return output
 	end # print_tempo_override

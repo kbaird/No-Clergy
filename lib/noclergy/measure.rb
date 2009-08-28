@@ -310,8 +310,8 @@ measure number within the piece.
     return <<END_OF_LY_OUTPUT
 #{break_output}
 
-| % MEASURE #{@numI.inspect}
-\\time #{@topI.inspect}/#{@bottomI.inspect} #{notes_output}
+% MEASURE #{@numI.inspect}
+\\time #{@topI.inspect}/#{@bottomI.inspect} #{notes_output} |
 END_OF_LY_OUTPUT
 	end # ly_output
 

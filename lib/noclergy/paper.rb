@@ -29,14 +29,14 @@ class Paper
 
   LY_STAFF_SIZE = 23
   LY_LINE_WIDTH = 7.5
-  LY_INDENT = 0.5
+  LY_INDENT     = 0.5
 
+  ### FIXME NOW: Find a way to bring this back
   PAPER_BLOCK = <<END_OF_HERE_DOC
-  \\paper {
-    ##(paper-set-staff-size (* #{LY_STAFF_SIZE.to_s} pt))
-    linewidth = #{LY_LINE_WIDTH.to_s} \\in
-    indent = #{LY_INDENT.to_s} \\in
-  } % end paper
+  %\\layout {
+  %  %line-width = #{LY_LINE_WIDTH} \\in
+  %  %indent = #{LY_INDENT} \\in
+  %} % end layout
 
 END_OF_HERE_DOC
 
@@ -59,11 +59,12 @@ specifically paper and font size information, as well as the
 
   private
 
+  ### FIXME NOW: Find a way to bring the midi block back
   def ly_output_midi_block()
 		return <<END_OF_MIDI_BLOCK
-  \\midi {
-    \\tempo 8=#{@tempo.to_s}
-  } % end midi
+  %\\midi {
+  %  \\tempo 8=#{@tempo.to_s}
+  %} % end midi
 END_OF_MIDI_BLOCK
   end # ly_output_midi_block
 
