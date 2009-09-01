@@ -11,6 +11,7 @@ Debian packages to have installed:
 apache
 libapache-mod-ruby
 libapache-ruby1.8
+liberuby
 libxml-parser-ruby1.8
 lilypond
 ruby
