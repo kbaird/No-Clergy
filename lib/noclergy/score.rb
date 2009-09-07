@@ -116,15 +116,17 @@ Creates this <b>Score</b>, including the entire list of <b>Measure</b>s.
 
 # As expected from name.
   def create_web_dir()
-    web_dirname = BASE_WEB_DIR + 'insts/' + @inst.abbr() + '/'
+    inst = @inst.abbr
+    web_dirname = %Q[#{BASE_WEB_DIR}insts/#{inst}/]
     system("mkdir -p #{web_dirname}") unless File.directory?(web_dirname)
     File.open(web_dirname + 'index.html', 'w', 756) do |webfile|
       webfile.puts(WEB_TEMPLATE[:begin])
       webfile.puts(@inst.fullname)
       webfile.puts(WEB_TEMPLATE[:middle])
-      webfile.puts('<img src="../../png/' + @inst.abbr + '-page1.png" />')
+      webfile.puts(%Q[<img src="#{@inst.abbr}.png" />])
       webfile.puts(WEB_TEMPLATE[:end])
     end
+    system("ln -s #{Outputer::NOTATION_PNG_DIR}#{inst}.png #{web_dirname}")
   end # create_web_dir
 
 =begin rdoc
