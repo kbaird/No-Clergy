@@ -33,6 +33,7 @@ class Outputer < Config
 
   BASE_VAR_DIR      = '/var/lib/noclergy/'
   INIT_BASENAME     = 'has_been_initialized'
+  LY_OPTIONS        = '--png'
   NOTATION_VAR_DIR  = BASE_VAR_DIR + 'ly/'
   NOTATION_PDF_DIR  = BASE_VAR_DIR + 'pdf/'
   NOTATION_PNG_DIR  = BASE_VAR_DIR + 'png/'
@@ -112,12 +113,11 @@ END_OF_USAGE
   end # flush_feedback
 
   def flush_image_output()
-    system("rm #{NOTATION_PDF_DIR}*.pdf 2> /dev/null")
-    system("rm #{NOTATION_PNG_DIR}*.png 2> /dev/null")
+    system("rm #{NOTATION_PNG_DIR}*.png")
   end # flush_image_output
 
   def flush_xml()
-    system("rm #{BASE_XML_DIR}*.xml 2> /dev/null") 
+    system("rm #{BASE_XML_DIR}*.xml")
   end # flush_xml
 
 # See also Outputer.ensemble_initialized?
@@ -135,9 +135,8 @@ Move/copy existing output files to 'old' versions. Takes an optional
 instrument abbreviation <b>String</b>; defaults to Outputer::inst.abbr().
 =end
   def mv_old(inst=@inst.abbr())
-    system("mv #{NOTATION_VAR_DIR}#{inst}.ly #{NOTATION_VAR_DIR}#{inst}-old.ly 2> /dev/null")
-    system("mv #{NOTATION_PDF_DIR}#{inst}.pdf #{NOTATION_PDF_DIR}#{inst}-old.pdf 2> /dev/null")
-    system("cp #{NOTATION_PNG_DIR}#{inst}-page1.png #{NOTATION_PNG_DIR}#{inst}-page1-old.png 2> /dev/null")
+    system("mv #{NOTATION_VAR_DIR}#{inst}.ly #{NOTATION_VAR_DIR}#{inst}-old.ly")
+    system("cp #{NOTATION_PNG_DIR}#{inst}.png #{NOTATION_PNG_DIR}#{inst}-old.png")
    end # mv_old 
 
 # For now, only outputs in Lilypond[http://lilypond.org/] format.
@@ -210,10 +209,7 @@ and divide by their tuplet_type to get their ticks value
   def render_ly(inst = @inst.abbr)
     fail 'no inst' unless inst
     ly_input_file   = NOTATION_VAR_DIR + inst + '.ly'
-    ly_options = '--png --no-pdf --no-ps'
-    cmd = "lilypond #{ly_options} -o #{NOTATION_PNG_DIR} #{ly_input_file}"
-    cmd += ' 2> /dev/null'
-    system(cmd)
+    system("lilypond #{LY_OPTIONS} -o #{NOTATION_PNG_DIR} #{ly_input_file}")
   end # render_ly
 
 	def setup_config()
