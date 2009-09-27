@@ -57,7 +57,7 @@ END_OF_HERE_DOC
   WEB_TEMPLATE[:middle] = <<END_OF_HERE_DOC
 for No Clergy</title>
 <style>
-@import url('../css/noclergy.php');
+@import url('../../css/noclergy.css');
 h1, h2 { display: none; }
 </style>
 </head>
