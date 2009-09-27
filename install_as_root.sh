@@ -81,6 +81,8 @@ chmod -R 2777 $LOCALSTATEDIR/noclergy/png
 chmod -R 2777 $LOCALSTATEDIR/noclergy/web
 chmod -R 2777 $LOCALSTATEDIR/noclergy/xml
 
+chmod 777 $LOCALSTATEDIR/noclergy/web/feedback/feedback.html
+
 cp cgi-bin/*.* $CGI_BIN_DIR/
 chmod 775 $CGI_BIN_DIR/nc_feedback.cgi
 echo >&2
