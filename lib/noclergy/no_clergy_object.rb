@@ -2,7 +2,7 @@
 # no_clergy_object.rb
 # $Id: no_clergy_object.rb,v 1.14 2006/07/14 13:22:02 kbaird Exp $
 
-# Copyright (C) 2004 Kevin C. Baird
+# Copyright (C) 2004-2009 Kevin C. Baird
 #
 # This file is part of 'No Clergy'.
 #

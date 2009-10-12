@@ -2,7 +2,7 @@
 # note.rb
 # $Id: note.rb,v 1.42 2006/05/30 11:31:40 kbaird Exp $
 
-# Copyright (C) 2004 Kevin C. Baird
+# Copyright (C) 2004-2009 Kevin C. Baird
 #
 # This file is part of 'No Clergy'.
 #

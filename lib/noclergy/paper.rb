@@ -2,7 +2,7 @@
 # paper.rb
 # $Id: paper.rb,v 1.7 2006/05/05 21:11:24 kbaird Exp $
 
-# Copyright (C) 2004 Kevin C. Baird
+# Copyright (C) 2004-2009 Kevin C. Baird
 #
 # This file is part of 'No Clergy'.
 #
@@ -32,7 +32,7 @@ class Paper
   LY_INDENT     = 0.5
 
   ### FIXME NOW: Find a way to bring this back
-  PAPER_BLOCK = <<END_OF_HERE_DOC
+  PAPER_BLOCK = '' || <<END_OF_HERE_DOC
   %\\layout {
   %  %line-width = #{LY_LINE_WIDTH} \\in
   %  %indent = #{LY_INDENT} \\in
@@ -61,7 +61,13 @@ specifically paper and font size information, as well as the
 
   ### FIXME NOW: Find a way to bring the midi block back
   def ly_output_midi_block()
-		return <<END_OF_MIDI_BLOCK
+		return ''
+    return <<END_OF_MIDI_BLOCK
+  \\midi {
+    \\context {
+      \\Score tempoWholesPerMinute = #(ly:make-moment #{@tempo} 8)
+    }
+  } % midi
   %\\midi {
   %  \\tempo 8=#{@tempo.to_s}
   %} % end midi

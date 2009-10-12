@@ -5,7 +5,7 @@
 # possibly elsewhere for other OSes
 # and give me permissions 755
 
-# Copyright (C) 2004 Kevin C. Baird
+# Copyright (C) 2004-2009 Kevin C. Baird
 #
 # This file is part of 'No Clergy'.
 #

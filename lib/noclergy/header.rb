@@ -2,7 +2,7 @@
 # header.rb
 # $Id: header.rb,v 1.7 2006/05/05 18:26:48 kbaird Exp $
 
-# Copyright (C) 2004 Kevin C. Baird
+# Copyright (C) 2004-2009 Kevin C. Baird
 #
 # This file is part of 'No Clergy'.
 #

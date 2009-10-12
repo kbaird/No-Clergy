@@ -2,7 +2,7 @@
 # no_clergy_cli
 # $Id: no_clergy_cli.rb,v 1.11 2006/07/30 00:41:14 kbaird Exp $
 
-# Copyright (C) 2004 Kevin C. Baird
+# Copyright (C) 2004-2009 Kevin C. Baird
 #
 # This file is part of 'No Clergy'.
 #

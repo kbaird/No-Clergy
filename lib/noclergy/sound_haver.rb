@@ -2,7 +2,7 @@
 # sound_haver.rb
 # $Id: sound_haver.rb,v 1.2 2006/01/24 13:35:57 kbaird Exp $
 
-# Copyright (C) 2004 Kevin C. Baird
+# Copyright (C) 2004-2009 Kevin C. Baird
 #
 # This file is part of 'No Clergy'.
 #

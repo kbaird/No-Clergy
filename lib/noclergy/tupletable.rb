@@ -2,7 +2,7 @@
 # tupletable.rb
 # $Id: tupletable.rb,v 1.14 2006/07/14 13:22:23 kbaird Exp $
 
-# Copyright (C) 2004 Kevin C. Baird
+# Copyright (C) 2004-2009 Kevin C. Baird
 #
 # This file is part of 'No Clergy'.
 #

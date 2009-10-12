@@ -2,7 +2,7 @@
 # config.rb
 # $Id: config.rb,v 1.31 2006/07/15 22:03:45 kbaird Exp $
 
-# Copyright (C) 2004 Kevin C. Baird
+# Copyright (C) 2004-2009 Kevin C. Baird
 #
 # This file is part of 'No Clergy'.
 #

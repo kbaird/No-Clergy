@@ -2,7 +2,7 @@
 # score.rb
 # $Id: score.rb,v 1.39 2007/07/30 12:42:20 kbaird Exp $
 
-# Copyright (C) 2004 Kevin C. Baird
+# Copyright (C) 2004-2009 Kevin C. Baird
 #
 # This file is part of 'No Clergy'.
 #

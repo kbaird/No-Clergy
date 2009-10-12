@@ -2,7 +2,7 @@
 # symbol.rb
 # $Id: symbol.rb,v 1.1 2006/07/11 22:03:59 kbaird Exp $
 
-# Copyright (C) 2004 Kevin C. Baird
+# Copyright (C) 2004-2009 Kevin C. Baird
 #
 # This file is part of 'No Clergy'.
 #

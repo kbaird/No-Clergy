@@ -2,7 +2,7 @@
 # note_list.rb
 # $Id: note_list.rb,v 1.2 2006/02/04 15:21:33 kbaird Exp $
 
-# Copyright (C) 2004 Kevin C. Baird
+# Copyright (C) 2004-2009 Kevin C. Baird
 #
 # This file is part of 'No Clergy'.
 #

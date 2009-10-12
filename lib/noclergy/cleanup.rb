@@ -2,7 +2,7 @@
 # cleanup.rb
 # $Id: cleanup.rb,v 1.8 2006/05/29 23:59:44 kbaird Exp $
 
-# Copyright (C) 2004 Kevin C. Baird
+# Copyright (C) 2004-2009 Kevin C. Baird
 #
 # This file is part of 'No Clergy'.
 #

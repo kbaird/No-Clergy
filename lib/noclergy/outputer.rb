@@ -2,7 +2,7 @@
 # outputer.rb
 # $Id: outputer.rb,v 1.25 2006/05/05 21:51:43 kbaird Exp $
 
-# Copyright (C) 2004 Kevin C. Baird
+# Copyright (C) 2004-2009 Kevin C. Baird
 #
 # This file is part of 'No Clergy'.
 #

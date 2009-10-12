@@ -2,7 +2,7 @@
 # piece.rb
 # $Id: piece.rb,v 1.3 2006/04/25 14:01:45 kbaird Exp $
 
-# Copyright (C) 2004 Kevin C. Baird
+# Copyright (C) 2004-2009 Kevin C. Baird
 #
 # This file is part of 'No Clergy'.
 #
