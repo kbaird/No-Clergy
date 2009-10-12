@@ -11,14 +11,6 @@
 <li class="main">
 <acronym title="GNU's Not Unix!">GNU</acronym> 
 <a href="http://www.lilypond.org">Lilypond</a>
-  <ul style="list-style-type: none">
-    <li>Samples: 
-      <ul style="list-style-type: none">
-	<li><a href="./tpt/">Trumpet sample</a></li>
-	<li><a href="./vn/">Violin sample</a></li>
-      </ul>
-    </li>
-  </ul>
 </li>
 
 <li class="main"><a href="http://www.musicxml.org/">Music 
@@ -44,7 +36,7 @@ Markov Chains</a></li>
 <a href="http://www.music.buffalo.edu/">University at Buffalo</a> of 
 <a href="http://kevinbaird.net/">Kevin Baird</a>. Work on it 
 continues at 
-<a href="http://rubyforge.org/projects/noclergy/">Rubyforge</a>.
+<a href="http://github.com/kbaird/No-Clergy">GitHub</a>.
 </p>
     
 </div>
