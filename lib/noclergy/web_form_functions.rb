@@ -60,7 +60,7 @@ def show_form(inst)
   
   output =<<END_OF_FORM_START
 <form method="post" action="../cgi-bin/nc_feedback.cgi">
-<h2 style="text-align: center; font-size: 4em;">inst = #{inst}</h2>
+<h2 style="text-align: center; font-size: 4em;">#{Instrument.fullname(inst)}</h2>
 <table>
   <tr>
     <th class="category">Musical Characteristics</th>
