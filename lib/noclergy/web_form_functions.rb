@@ -1,4 +1,4 @@
-def display_options(higher, lower, display_name, value_name, inst)
+def display_options(higher, lower, display_name, value_name, inst, selected=nil)
   output =<<END_OF_DISPLAY_OPTIONS
 <td>
 <table>
@@ -11,9 +11,9 @@ def display_options(higher, lower, display_name, value_name, inst)
 <td style="text-align: right;">#{lower}:</td>
 </tr>
 <tr>
-#{show_cell(5, 1, inst, value_name)}
-#{show_cell(0, 0, inst, value_name)}
-#{show_cell(-1, -5, inst, value_name)}
+#{show_cell(5, 1, inst, value_name, selected)}
+#{show_cell(0, 0, inst, value_name, selected)}
+#{show_cell(-1, -5, inst, value_name, selected)}
 </tr>
 </table>
 </td>
@@ -23,11 +23,11 @@ end # display_options
 
 ###
 
-def show_cell(startpt, endpt, inst, value_name)
+def show_cell(startpt, endpt, inst, value_name, selected)
   return '' if (endpt > startpt)
   output = "<td>\n"
   startpt.downto(endpt) do |val|
-    output += show_val(val, inst, value_name) 
+    output += show_val(val, inst, value_name, selected)
   end
   output += "</td>\n"
   return output
@@ -71,7 +71,7 @@ END_OF_FORM_START
   shortH.keys.each do |long|
     output += "  <tr>\n"
     output += display_options(highH[long], lowH[long], long, shortH[long], inst)
-    output += display_options('wide', 'narrow', long, shortH[long] + 'var', inst)
+    output += display_options('wide', 'narrow', long, shortH[long] + 'var', inst, -5)
     output += "  </tr>\n"
   end # namesH
   
@@ -99,9 +99,10 @@ end # show_insts
 
 ###
 
-def show_val(val, inst, value_name)
+def show_val(val, inst, value_name, selected)
+  selected_rendered = (selected == val) ? %Q[ checked="checked"] : ''
   output =<<END_OF_SHOW_VAL
-<input type="radio" name="#{inst + '_' + value_name}" value="#{val.to_s}">
+<input type="radio" name="#{inst + '_' + value_name}" value="#{val.to_s}"#{selected_rendered}>
 END_OF_SHOW_VAL
   return output
 end # show_val
