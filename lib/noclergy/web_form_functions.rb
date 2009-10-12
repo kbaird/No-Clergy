@@ -92,7 +92,9 @@ def show_insts()
   insts.delete('..')
   insts.delete('CVS')
   output = "<ul>\n" + insts.map do |inst|
-    %Q(<li><a href="./?inst=#{inst}">#{Instrument.fullname(inst)}</a></li>)
+    fname = Instrument.fullname(inst)
+    notation_fragment = %Q[<a href="./insts/#{inst}/">player notation</a>]
+    %Q(<li><a href="./?inst=#{inst}">#{fname}</a> (#{notation_fragment})</li>)
   end.join("\n") + "</ul>\n"
   return output
 end # show_insts
