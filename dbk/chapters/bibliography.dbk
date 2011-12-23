@@ -1,0 +1,330 @@
+<bibliography>
+<title>Bibliography</title>
+
+<bibliodiv>
+<title>Books</title>
+
+<biblioentry>
+<authorgroup>
+<author>
+<surname>Dawkins</surname>
+<firstname>Richard</firstname>
+</author>
+</authorgroup>
+<copyright>
+<year>1996, 1987, 1986</year>
+<holder>Richard Dawkins</holder>
+</copyright>
+<isbn>0-393-31570-3</isbn>
+<publisher>
+<publishername>W. W. Norton and Company, Inc</publishername>
+</publisher>
+<title>The Blind Watchmaker</title>
+<subtitle>Why the Evidence of Evolution Reveals a Universe Without Design</subtitle>
+</biblioentry>
+
+<biblioentry>
+<authorgroup>
+<author>
+<surname>Dodge</surname>
+<firstname>Charles</firstname>
+</author>
+<author>
+<surname>Jerse</surname>
+<firstname>Thomas</firstname>
+<othername role="middle">A.</othername>
+</author>
+</authorgroup>
+<copyright>
+<year>1985</year>
+<holder>Schirmer Books</holder>
+</copyright>
+<isbn>0-02-873100-X</isbn>
+<publisher>
+<publishername>Schirmer Books</publishername>
+</publisher>
+<title>Computer Music</title>
+</biblioentry>
+
+<biblioentry>
+<authorgroup>
+<author>
+<surname>Hetland</surname>
+<firstname>Magnus</firstname>
+<othername role="middle">Lie</othername>
+</author>
+</authorgroup>
+<copyright>
+<year>2002</year>
+<holder>Magnus Lie Hetland</holder>
+</copyright>
+<isbn>1-59059-00606</isbn>
+<publisher>
+<publishername>Apress</publishername>
+</publisher>
+<title>Practical Python</title>
+</biblioentry>
+
+<biblioentry>
+<authorgroup>
+<author>
+<surname>Hiller</surname>
+<firstname>Lejaren</firstname>
+<othername role="middle">A.</othername>
+<lineage>Jr.</lineage>
+</author>
+<author>
+<surname>Isaacson</surname>
+<firstname>Leonard</firstname>
+<othername role="middle">M.</othername>
+</author>
+</authorgroup>
+<copyright>
+<year>1959</year>
+<holder>McGraw-Hill Book Company, Inc</holder>
+</copyright>
+<isbn>0-313-22158-8</isbn>
+<publisher>
+<publishername>McGraw-Hill</publishername>
+</publisher>
+<title>Experimental Music</title>
+</biblioentry>
+
+<biblioentry>
+<authorgroup>
+<author>
+<surname>Jones</surname>
+<firstname>Christopher</firstname>
+<othername role="mi">A.</othername>
+</author>
+<author>
+<surname>Drake</surname>
+<firstname>Fred</firstname>
+<lineage>Jr</lineage>
+</author>
+</authorgroup>
+<copyright>
+<year>2002</year>
+<holder>&ora;</holder>
+</copyright>
+<isbn>0-596-00128-2</isbn>
+<publisher>
+<publishername>&ora;</publishername>
+</publisher>
+<title>Python &amp; XML</title>
+<subtitle>XML Processing with Python</subtitle>
+</biblioentry>
+
+<biblioentry>
+<authorgroup>
+<author>
+<surname>Lutz</surname>
+<firstname>Mark</firstname>
+</author>
+</authorgroup>
+<copyright>
+<year>2001, 1996</year>
+<holder>&ora;</holder>
+</copyright>
+<isbn>0-596-00085-5</isbn>
+<publisher>
+<publishername>&ora;</publishername>
+</publisher>
+<title>Programming Python</title>
+<subtitle>Solutions for Python Programmers</subtitle>
+</biblioentry>
+
+<biblioentry>
+<authorgroup>
+<author>
+<surname>Roads</surname>
+<firstname>Curtis</firstname>
+</author>
+</authorgroup>
+<copyright><year>1996</year></copyright>
+<isbn>0-262-68082-3</isbn>
+<publisher>
+<publishername>The MIT Press</publishername>
+</publisher>
+<title>Computer Music Tutorial</title>
+</biblioentry>
+
+<biblioentry>
+<authorgroup>
+<author>
+<surname>Rowe</surname>
+<firstname>Robert</firstname>
+</author>
+</authorgroup>
+<copyright>
+<year>1993</year>
+<holder>&mit;</holder>
+</copyright>
+<isbn>0-262-18149-5</isbn>
+<publisher>
+<publishername>The MIT Press</publishername>
+</publisher>
+<title>Interactive Music Systems</title>
+</biblioentry>
+
+<biblioentry>
+<authorgroup>
+<author>
+<surname>Rowe</surname>
+<firstname>Robert</firstname>
+</author>
+</authorgroup>
+<copyright>
+<year>2004</year>
+<holder>&mit;</holder>
+</copyright>
+<isbn>0-262-68149-8</isbn>
+<publisher>
+<publishername>The MIT Press</publishername>
+</publisher>
+<title>Machine Musicianship</title>
+</biblioentry>
+
+<biblioentry>
+<authorgroup>
+<author>
+<surname>Xenakis</surname>
+<firstname>Iannis</firstname>
+</author>
+</authorgroup>
+<copyright>
+<year>1992</year>
+<holder>Pendragon Press</holder>
+</copyright>
+<isbn>1-57647-079-2</isbn>
+<publisher>
+<publishername>Pendragon Press</publishername>
+</publisher>
+<title>Formalized Music, revised edition</title>
+<subtitle>Thought and Mathematics in Music</subtitle>
+</biblioentry>
+
+</bibliodiv>
+
+<bibliodiv>
+<title>Musical Compositions</title>
+
+<biblioentry>
+<authorgroup>
+<author>
+<surname>Brown</surname>
+<firstname>Earle</firstname>
+</author>
+</authorgroup>
+<copyright><year>1962</year></copyright>
+<publisher>
+<publishername>Associated Music Publishers, Inc</publishername>
+</publisher>
+<title>Available Forms I and II</title>
+</biblioentry>
+
+<biblioentry>
+<authorgroup>
+<author>
+<surname>Hiller</surname>
+<firstname>Lejaren</firstname>
+<othername role="middle">A.</othername>
+<lineage>Jr.</lineage>
+</author>
+<author>
+<surname>Isaacson</surname>
+<firstname>Leonard</firstname>
+<othername role="middle">M.</othername>
+</author>
+</authorgroup>
+<copyright><year>1957</year></copyright>
+<isbn>0-313-22158-8</isbn>
+<publisher>
+<publishername>New Music Edition</publishername>
+</publisher>
+<title>Iliac Suite for String Quartet</title>
+<volumenum>30</volumenum>
+<issuenum>3</issuenum>
+</biblioentry>
+
+</bibliodiv>
+
+<bibliodiv>
+<title>Software, <acronym role="Uniform Resource Locator">URL</acronym>s</title>
+
+<biblioentry>
+<authorgroup>
+<author>
+<surname>The Apache Software Foundation</surname>
+</author>
+</authorgroup>
+<title>
+<ulink url="http://httpd.apache.org">Apache HTTP Server</ulink>
+</title>
+</biblioentry>
+
+<biblioentry>
+<authorgroup>
+<author>
+<surname>Ariza</surname>
+<firstname>Christopher</firstname>
+</author>
+</authorgroup>
+<title><ulink url="http://algorithmic.net/">algorithmic.net</ulink></title>
+<subtitle>A Lexicon of Systems and Research in Computer Aided Algorithmic Music Composition</subtitle>
+</biblioentry>
+
+<biblioentry>
+<authorgroup>
+<author>
+<surname>The Debian Project</surname>
+</author>
+</authorgroup>
+<title>
+<ulink url="http://debian.org">Debian <acronym role="GNU's Not Unix!">GNU</acronym>/Linux</ulink>
+</title>
+</biblioentry>
+
+<biblioentry>
+<authorgroup>
+<author>
+<surname>Nienhuys</surname>
+<firstname>Han-Wen</firstname>
+</author>
+<author>
+<surname>Nieuwenhuizen</surname>
+<firstname>Jan</firstname>
+</author>
+</authorgroup>
+<title>
+<ulink url="http://lilypond.org"><acronym role="GNU's Not Unix!">GNU</acronym> Lilypond</ulink>
+</title>
+</biblioentry>
+
+<biblioentry>
+<authorgroup>
+<author>
+<surname>Ramey</surname>
+<firstname>Chet</firstname>
+</author>
+</authorgroup>
+<title>
+<ulink url="http://www.gnu.org/software/bash/bash.html"><acronym role="GNU's Not Unix!">GNU</acronym> Bash</ulink>
+</title>
+</biblioentry>
+
+<biblioentry>
+<authorgroup>
+<author>
+<surname>van Rossum</surname>
+<firstname>Guido</firstname>
+</author>
+</authorgroup>
+<title><ulink url="http://python.org">Python</ulink>
+</title>
+</biblioentry>
+
+</bibliodiv>
+
+</bibliography>
+

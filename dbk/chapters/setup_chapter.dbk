@@ -1,0 +1,64 @@
+<chapter>
+<title>
+Setup
+</title>
+
+<para>
+<citetitle>No Clergy</citetitle> runs on a
+<ulink url="http://www.debian.org/">Debian GNU/Linux</ulink>
+system on Intel x86 architecture 
+(although the architecture shouldn't matter), using
+<emphasis>Sarge</emphasis>'s packages of
+<itemizedlist mark="bullet" spacing="compact">
+ <listitem><application>apache</application> (1.3.31-4)</listitem>
+ <listitem><application>lilypond</application> (2.2.6)</listitem>
+ <listitem><application>python</application> (2.3.4-5)</listitem>
+ <listitem><application>python-xml</application> (0.8.3-5)</listitem>
+</itemizedlist>
+Specific version numbers following in parentheses. This system (assumed 
+to have the hostname 
+<filename>nibbler.med.buffalo.edu</filename>) should be set up to serve 
+web documents.
+</para>
+
+<para>
+The performers (clarinet, soprano saxophone, and violin in the default configuration)
+should be in the center of an informal performance space, with one web browser equipped computer for each performer. The computers should be arranged such that the screens face
+outward and the performers face inward. There should be ample room for audience members
+to observe each performer's screen. Each performer should browse their web browser to
+<filename>
+http://nibbler.med.buffalo.edu/noclergy/clar/
+</filename>
+ (in the base of the clarinettist),
+<filename>
+http://nibbler.med.buffalo.edu/noclergy/sax/
+</filename>
+ (in the case of the saxophonist), or
+<filename>
+http://nibbler.med.buffalo.edu/noclergy/vn/
+</filename>
+ (in the case of the violinist). Differing
+instrumentation will require creation of appropriate web directories and 
+minor re-writing of some of the 
+<application>Python</application> and 
+<application>bash</application> scripts.
+</para>
+
+<para>
+For the audience, one or more web browsers should be open to the 
+<filename class="directory">noclergy/</filename> directory on the host 
+(assumed to be
+<systemitem class="systemname">nibbler.med.buffalo.edu</systemitem>).
+</para>
+
+<para>
+The <application>Python</application> script 
+<link 
+linkend="noclergy_score"><filename>noclergy_score.py</filename></link> 
+contains a variable <varname>localDTDpathS</varname>, which is the 
+pathname pointing to the local copy of the MusicXML 
+<acronym>DTD</acronym>. This will need to be altered if the piece is run 
+on a server other than mine.
+</para>
+
+</chapter>

@@ -1,0 +1,732 @@
+<programlisting>
+<![CDATA[
+#!/usr/bin/env python
+# noclergy_measure.py
+
+# Copyright (C) 2004 Kevin C. Baird
+#
+# This file is part of 'No Clergy'.
+#
+# No Clergy is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+from noclergy_config import Config
+from noclergy_markov import Markov
+from noclergy_note import Note
+from noclergy_object import Object
+from xml.dom.ext.reader import Sax2
+import random
+
+class Measure(Object):
+  """
+  Occurring within a Score,
+  this contains a list of Notes, a meter, etc.
+  """
+  def __init__(self, num, transpose):
+  self.feedbackD = {}
+  self.has_declared_first_sound = 0
+  # has the first note in the Score already been identified?
+  self.has_read_from_XML = 0
+  self.notes = []
+  self.mutatingB = 0 # is this measure based no previous data?
+  self.numMeasuresI = 0
+  self.filled = 0
+  # how many 16ths in the measure have been used up?
+  self.num = num # mm number, as commonly understood
+  self.previous_dyn = ''
+  self.previous_dyn_output = ''
+  self.tempo = 0
+  self.transposition = transpose
+  self.last_dur = 0
+  self.length = 0 # how many 16ths in the measure?
+  self.ticks = 0  # how many ticks in the measure?
+
+  def addNote(self, note):
+  """
+  Adds the Note argument to its list of Notes, ensuring that
+  it will fit within the remaining beats in the Measure.
+  """
+  if note.ticks > self.remaining:
+  while note.ticks > self.remaining:
+  note.setDuration('rand', self.last_dur)
+  # don't delete the above, even if you think it's redundant
+  self.notes.append(note)
+  self.filled += note.ticks
+  self.remaining -= note.ticks
+
+  def allRestsInBeat(self):
+  """
+  Cycle through every note, if a beat consists entirely of
+  rests, replace them with a single rest of a beat's duration.
+  """
+  beatL = []
+  filledI = 0
+  some_non_rests = 0
+  tempL = []
+  for note in self.notes:
+  if filledI % note.rvalues[self.bottom] == 0:
+  downbeatB = 1
+  else:
+  downbeatB = 0
+  if not note.pitch == 'r':
+  some_non_rests = 1
+  filledI += note.dur
+  beatL.append(note)
+  if downbeatB:
+  if some_non_rests:
+    for sub_note in beatL:
+    tempL.append(sub_note)
+  else:
+    temp_note = Note(self.transposition)
+    temp_note.copy(note)
+    temp_note.setDuration(note.rvalues[self.bottom], self.last_dur)
+    tempL.append(temp_note)
+  beatL = []
+
+  def assignXMLtuplet_nums(self):
+  """
+  This method steps through the notes in Measure.notes, checking for
+  note.tuplet_type values other than 1. It assigns appropriate
+  note.tuplet_num values so that Lilypond know when to close tuplet
+  brackets.
+  """
+  tupnum = 0
+  for note in self.notes:
+  if not note.tuplet:
+  note.tuplet_num = 0
+  note.tuplet_type = 1
+  tupnum = 0
+  else:
+  tupnum += 1
+  note.tuplet_num = tupnum
+
+  # BEGIN added since DOM
+  found_pitchB = 0
+  for note in self.notes:
+  if note.tuplet:
+  if not found_pitchB:
+    if not note.pitch == 'r':
+    note.first_non_rest_tuplet = 1
+    found_pitchB = 1
+  else:
+  found_pitchB = 0
+  self.notes.reverse()
+  found_pitchB = 0
+  for note in self.notes:
+  if note.tuplet:
+  if not found_pitchB:
+    if not note.pitch == 'r':
+    note.last_non_rest_tuplet = 1
+    found_pitchB = 1
+  else:
+  found_pitchB = 0
+  self.notes.reverse()
+  for note in self.notes:
+  if note.first_non_rest_tuplet and note.last_non_rest_tuplet:
+  note.first_non_rest_tuplet = 0
+  note.last_non_rest_tuplet = 0
+  # END added since DOM
+
+  def autoBeamSettings(self, max_separation=15):
+  """
+  Cycle through Notes, turn auto-beaming
+  on or off as demanded aesthetically.
+  """
+  for i in range(len(self.notes)-1):
+  prev_note = self.notes[i]
+  current_note = self.notes[i+1]
+  if prev_note.tuplet and prev_note.tuplet_num == 1:
+  prev_note.autoBeamSuspendB = 1
+  elif current_note.tuplet:
+  if current_note.tuplet_num == current_note.tuplet_type:
+    current_note.autobeamResumeB = 1
+  elif current_note.tied:
+  prev_note.autoBeamSuspendB = 1
+  current_note.autobeamResumeB = 1
+  if not prev_note.midi_pitch == 0:
+  # if rather than elif, so that it will
+  # break beams within tuplets as well
+  if not current_note.midi_pitch == 0:
+    separation = current_note.midi_pitch
+    separation -= prev_note.midi_pitch
+    separation = abs(separation)
+    if separation >= max_separation:
+    prev_note.autoBeamSuspendB = 1
+    current_note.autobeamResumeB = 1
+    # break beams if notes are
+    # separated by 15+ semitones
+ 
+  def checkProperlyFilled(self):
+  """
+  Cycle through all the notes.
+  Fails if they don't add up to the total length.
+  """
+  temp_length = 0
+  for note in self.notes:
+  if note.tuplet and note.tuplet_type == note.tuplet_num:
+  pass
+  else:
+  temp_length += note.dur
+  if not temp_length == self.length:
+  return 0
+  else:
+  return 1
+
+  def construct(self, tempo, previous_dyn, has_declared_first_sound, methodS='rand'):
+  """
+  Generates a Measure-full of musical data, mainly a list of Notes.
+  """
+  self.config = Config()
+  self.config.tupletpcI = self.tupletpcI
+  self.config.restpcI = self.restpcI
+  self.config.artpcI = self.artpcI
+  self.config.dynpcI = self.dynpcI
+  self.config.numMeasuresI = self.numMeasuresI
+  self.config.masterTupletL = self.masterTupletL
+  self.config.tempTupletL = self.tempTupletL
+  self.config.ticksI = self.ticksPerI
+  self.config.instS = self.instS
+  self.config.topL = self.topL
+  self.has_declared_first_sound = has_declared_first_sound
+  self.previous_dyn = previous_dyn
+  self.previous_dyn_output = previous_dyn
+  notesL = []
+  self.setMeter(methodS)
+  if self.num == 1:
+  self.tempo = tempo
+  self.debug_counter = 1
+  while len(notesL) == 0:
+  # outer loop makes sure there is at least 1 note in each measure
+  while self.remaining:
+  samplenote = Note(self.transposition)
+  samplenote.addVariables(self.config)
+  self.duration(samplenote)
+  samplenote.mutateByFeedback('dur', self.feedbackD)
+  samplenote.setPitch(methodS)
+  samplenote.setArticulation(methodS)
+  if self.has_declared_first_sound:
+    samplenote.setDynamics(methodS, self.previous_dyn_output)
+  else:
+    samplenote.setDynamics(methodS, 'no previous dynamic')
+    if not samplenote.midi_pitch == 0:
+    samplenote.declareFirstSoundInScore()
+    self.has_declared_first_sound = 1
+    # first pitched note of the piece has a 
+    # dynamic marking of self.previous_dynamics as
+    # defined in the Measure.construct constructor
+  self.previous_dyn = samplenote.dynS
+  if not samplenote.midi_pitch == 0:
+    self.previous_dyn_output = samplenote.dynS
+  samplenote.remaining = self.remaining
+  notesL.append(samplenote)
+  self.addNote(samplenote)
+  self.autoBeamSettings()
+
+  def constructMarkov(self, tempo, previous_note, prev2_note, markov):
+  """
+  Constructs a new Measure, defining
+  Note characteristics via Markov methods.
+  """
+  self.config = Config()
+  self.config.tupletpcI = self.tupletpcI
+  self.config.restpcI = self.restpcI
+  self.config.artpcI = self.artpcI
+  self.config.dynpcI = self.dynpcI
+  self.config.numMeasuresI = self.numMeasuresI
+  self.config.masterTupletL = self.masterTupletL
+  self.config.tempTupletL = self.tempTupletL
+  self.config.ticksI = self.ticksPerI
+  self.config.instS = self.instS
+  self.config.topL = self.topL
+  if self.num == 1:
+  self.tempo = tempo
+  self.debug_counter = 1
+  while len(self.notes) == 0:
+  # outer loop makes sure there is at least 1 note in each measure
+  while self.remaining:
+  samplenote = Note(self.transposition)
+  samplenote.addVariables(self.config)
+  self.duration(samplenote)
+  samplenote.mutateByFeedback('dur', self.feedbackD)
+  new_art = markov.extract2('art', prev2_note.artS, previous_note.artS)
+  #new_dur = markov.extract2('dur', prev2_note.dur, previous_note.dur)
+  new_dyn = markov.extract2('dyn', prev2_note.dynS, previous_note.dynS)
+  pr2_pitch = prev2_note.midi_pitch   # for wrapping in 
+  pr_pitch = previous_note.midi_pitch # printed output
+  new_midi_pitch = markov.extract2('midi_pitch', pr2_pitch, pr_pitch)
+  while random.randrange(100)+1 > self.restpcI and not new_midi_pitch:
+    NMP = markov.extract2('midi_pitch', pr2_pitch, pr_pitch)
+    new_midi_pitch = NMP # fixes wrapping in printed output
+  new_midi_pitch = int(new_midi_pitch)
+  samplenote.setPitch(new_midi_pitch)
+  samplenote.setArticulation(new_art)
+  if self.has_declared_first_sound:
+    samplenote.setDynamics(new_dyn, self.previous_dyn_output)
+  else:
+    samplenote.setDynamics(new_dyn, 'no previous dynamic')
+  #samplenote.setDynamics(new_dyn, self.previous_dyn_output)
+  #if self.num == 1 and len(self.notes) == 0:
+  #  samplenote.setDynamics(new_dyn, 'no previous dynamic')
+  self.previous_dyn = samplenote.dynS
+  if not samplenote.midi_pitch == 0:
+    self.previous_dyn_output = samplenote.dynS
+  samplenote.remaining = self.remaining
+  self.notes.append(samplenote)
+  self.addNote(samplenote)
+  # update previous values
+  prev2_note = Note(self.transposition)
+  prev2_note.copy(previous_note)
+  previous_note = Note(self.transposition)
+  previous_note.copy(samplenote)
+
+  def duration(self, samplenote):
+  """
+  This method attaches a duration (dur) to the Note argument. It
+  reads the tupletpc variable from the main script for the percent
+  change that a given note will be the start of a tuplet, subject to
+  other limitations. The method automatically blocks durations that
+  can not fit within the remaining measure.
+  """
+  samplenote.dur = self.ticks + 1 # dummy, force while loop
+  while samplenote.dur >= self.remaining:
+  samplenote.setDuration('rand', self.last_dur)
+  # keep creating new notes until they
+  # fit inside the remaining measure 
+  if random.randrange(100)+1 < self.tupletpcI and self.filled % 4 == 0:
+  # only do a tuplet if the pc says to, only on a 1/4 downbeat (% 4),
+  if samplenote.dur >= 4 and samplenote.ticks < self.remaining:
+  # only subdivide 1/4 notes, only if it fits within the measure
+  self.makeTuplets(samplenote)
+  else: 
+  samplenote.setDuration('rand', self.last_dur)
+
+  def filewrite(self, inst):
+  """
+  This method returns a string describing this Measure
+  as a fragment of a MusicXML file.
+  """
+  XMLfileS = ''
+  XMLfileS += ' <measure number="' + repr(self.num) + '">\n'
+  XMLfileS += ' <!-- has_declared_first_sound =' + repr(self.has_declared_first_sound) + '-->\n'
+  XMLfileS += ' <!-- previous_dyn_output =' + repr(self.previous_dyn_output) + '-->\n'
+  XMLfileS += '  <attributes>\n'
+  XMLfileS += '   <divisions>4</divisions>\n'
+  XMLfileS += '   <key>\n'
+  XMLfileS += '  <fifths>0</fifths>\n'
+  XMLfileS += '   </key>\n'
+  XMLfileS += '   <time>\n'
+  XMLfileS += '  <beats>' + repr(self.top) + '</beats>\n'
+  XMLfileS += '  <beat-type>' + repr(self.bottom) + '</beat-type>\n'
+  XMLfileS += '   </time>\n'
+  XMLfileS += '   <clef>\n'
+  XMLfileS += '  <sign>G</sign>\n'
+  XMLfileS += '  <line>2</line>\n'
+  XMLfileS += '   </clef>\n'
+  if not self.transposition == 0:
+  XMLfileS += '   <transpose>\n'
+  XMLfileS += '  <chromatic>'
+  XMLfileS += str(self.transposition)
+  XMLfileS += '</chromatic>\n'
+  XMLfileS += '   </transpose>\n'
+  XMLfileS += '  </attributes>\n'
+  if self.tempo > 0 and self.num == 1:
+  XMLfileS += self.tempoOut()
+  for note in self.notes:
+  XMLfileS += note.filewrite()
+  XMLfileS += ' </measure>\n'
+  return XMLfileS
+
+  def fillBeat(self, note, space_left_in_beat, note_list):
+  """
+  Fills space_left_in_beat with the longest note that will fit,
+  reduces space_left_in_beat, and recurses.
+  """
+  temp_dur = 0
+  local_space_left = space_left_in_beat
+  while_note_list = []
+  for i in range(self.numMeasuresI):
+  while_note_list.append(note)
+  # needs to be an item in a new list
+  # like this to not overwrite old notes
+  i = -1
+  while local_space_left > 1:
+  i += 1
+  while_note_list[i] = Note(self.transposition)
+  while_note_list[i].copy(note)
+  temp_dur = note.get_nearest_2power_equal(local_space_left)
+  while_note_list[i].setDuration(temp_dur, self.last_dur)
+  while_note_list[i].makeTied()
+  note_list.append(while_note_list[i])
+  local_space_left -= temp_dur
+  if local_space_left == 1:
+  note1 = Note(self.transposition)
+  note1.copy(note)
+  note1.setDuration(1, self.last_dur)
+  note_list.append(note1)
+
+  def fixTies(self):
+  """
+  Cycles through notes and prevents any note from being
+  tied to a note of a different pitch. Also prevents the
+  last note in a measure from being tied to anything.
+  TODO: breaks ties over a beat - shouldn't.
+  """
+  for i in range(len(self.notes)-1):
+  current_note = self.notes[i+1]
+  prev_note = self.notes[i]
+  if current_note.tuplet_type > 1:  # only check actual tuplets
+  if current_note.tuplet_type == current_note.tuplet_num:
+    #current_note.tied = 0   # final tuplets can not be tied
+    pass
+  if not prev_note.pitch == current_note.pitch:
+  prev_note.tied = 0
+  elif not prev_note.octave == current_note.octave:
+  prev_note.tied = 0
+  self.notes.reverse()
+  try: self.notes[0].tied = 0
+  except: pass
+  self.notes.reverse()
+
+  def fromXML_DOM(self, measureFromXML):
+  """
+  Look for tags in measureFromXML.
+  """
+  self.has_read_from_XML = 1
+  for noteTag in measureFromXML.getElementsByTagName('note'):
+  noteFromXML = Note(self.transposition)
+  noteFromXML.addVariables(self.config)
+  noteFromXML.fromXML_DOM(noteTag)
+  self.notes.append(noteFromXML)
+
+  def ly_output(self, prev_dyn):
+  """
+  Prints an entire Measure in Lilypond format, complete with a meter
+  declaration and a comment with the measure number within the piece.
+  """
+  self.previous_dyn = prev_dyn
+  outputS = '\n\n| % MEASURE ' + str(self.num) + '\n'
+  meterS = '\\time ' + str(self.top) + '/' + str(self.bottom)
+  outputS += meterS + ' '
+  prev_midi_pitch = 0 # used to break beams separated by 12+ semitones
+  for note in self.notes:
+  outputS += note.ly_output(self.previous_dyn_output, prev_midi_pitch) + ' '
+  self.previous_dyn = note.dynS
+  if not note.midi_pitch == 0:
+  self.previous_dyn_output = note.dynS
+  prev_midi_pitch = note.midi_pitch
+  return outputS
+
+  def makeTuplets(self, note):
+  """
+  This creates a set of tuplets (each of which is a normal Note). The type
+  of tuplet is determined by the master_tupletL list in the main python
+  script. That tuplet type then falls within the space of the closest
+  lower power of 2: 5 in 4, 3 in 2, etc. In other words, it only creates
+  tuplets which go faster than the base note type. If the tuplet created
+  were to consist entirely of rests, it instead outputs a single rest of
+  equivalent length.
+  """
+  self.all_rests = 1 # assume rests until you see a pitch in the tuplet
+  tuplet_type = random.choice(self.masterTupletL)
+  subdivide = note.get_nearest_2power(tuplet_type) # 3/2, 5/4, 7/4, etc.
+  while self.all_rests: # keep looping until at least one tuplet is a pitch
+  self.tupletL = []
+  for i in range(1, tuplet_type+1):
+  tupletnote = Note(self.transposition)
+  tupletnote.addVariables(self.config)
+  tupletnote.initTuplet(tuplet_type, i)
+  tupletnote.setPitch('rand')
+  if not tupletnote.pitch == 'r':
+    self.all_rests = 0
+  tupletnote.setArticulation('rand')
+  if self.has_declared_first_sound:
+    tupletnote.setDynamics('rand', self.previous_dyn_output)
+  else:
+    tupletnote.setDynamics('rand', 'no previous dynamic')
+  self.previous_dyn = tupletnote.dynS
+  if not tupletnote.midi_pitch == 0:
+    self.previous_dyn_output = tupletnote.dynS
+    tupletnote.declareFirstSoundInScore()
+    self.has_declared_first_sound = 1
+
+  tupletnote.setDuration(note.dur / subdivide, self.last_dur)
+  tupletnote.setTicks(note.dur * self.ticksPerI / tuplet_type)
+  self.tupletL.append(tupletnote)
+  self.tupletBeaming()
+  for tupletnote in self.tupletL: # at least one tuplet is a note
+  self.addNote(tupletnote)
+  self.previous_dyn_output = tupletnote.dynS
+
+  def massageOutput(self):
+  """
+  Alters output to make it more legible to the performer -
+  anything that's output-specific and not appropriate for storage:
+  basically Lilypond-specific formatting commands
+  auto-bracket tuplets
+  add dots to durations as needed, etc.
+  Constrasted with the 'massageStorage' method.
+  """
+  pass
+  #self.sortBeats()
+  #self.removeAdjacentStaccatos()
+  #self.removeAdjacentExpressions()
+  # pass 'rests' to also do rests
+  #self.fixTies()
+
+  def massageStorage(self):
+  """
+  Alters a Measure's stored musical data to make it
+  more understandable. It does things that have meaning
+  outside of Lilypond, such as combining adjacent rests
+  (i.e. "r16 r16" becomes "r8", etc.)
+  
+  Things it won't do:
+  Converting single long notes which span beats into
+  split notes with ties. (i.e. changing
+  'r16 a2 r8' into 'r16 a8. ~ a4 ~ a16 r8'
+  This complicates the storage mechanism without changing
+  the musical events. The example above is an example of
+  the sort of alteration that would be more appropriate
+  for the 'massageOutput' method.
+  """
+  self.allRestsInBeat()
+  self.removeRestExpressions()
+
+  def mutateByMarkov2(self, markov):
+  """
+  Do a Markov-based mutation at the Measure level.
+  """
+  for i in range(len(self.notes)):
+  note = self.notes[i]
+  #note = Note(self.transposition)
+  previous_note = self.notes[i-1]
+  if i > 1:
+  prev2_note = self.notes[i-2]
+  else:
+  prev2_note = Note(self.transposition)
+  prev2_note.artS = ' '
+  #prev2_note.dur = 4
+  prev2_note.dynS = 'mp'
+  prev2_note.midi_pitch = 0
+  new_art = markov.extract2('art', prev2_note.artS, previous_note.artS)
+  #new_dur = markov.extract2('dur', prev2_note.dur, previous_note.dur)
+  new_dyn = markov.extract2('dyn', prev2_note.dynS, previous_note.dynS)
+  pr2_pitch = prev2_note.midi_pitch   # for wrapping in
+  pr_pitch = previous_note.midi_pitch # printed output  
+  new_midi_pitch = markov.extract2('midi_pitch', pr2_pitch, pr_pitch)
+  while new_midi_pitch == 0 and random.randrange(100)+1 > restpc:
+  new_midi_pitch = markov.extract2('midi_pitch', pr2_pitch, pr_pitch)
+  try: new_midi_pitch = int(new_midi_pitch)
+  except: print 'DEBUG: new_midi_pitch =', new_midi_pitch
+  note.setPitch(new_midi_pitch)
+  #try: new_note.setDuration(int(new_dur))
+  #except: new_note.setDuration(4)
+  try: note.setArticulation(new_art)
+  except: pass
+  try:
+  note.setDynamics(new_dyn, self.previous_dyn_output)
+  if self.num == 1 and len(self.notes) == 0:
+    note.setDynamics(new_dyn, 'no previous dynamic')
+  self.previous_dyn = note.dynS
+  if not note.midi_pitch == 0:
+    self.previous_dyn_output = note.dynS
+  except:
+  pass
+
+  def removeAdjacentExpressions(self):
+  """
+  Cycles through Notes, removing expressions (articulations and
+  dynamics) from all tied notes except the first. Used only for
+  display in Lilypond.
+  """
+  prev_dyn = 'no previous value'
+  prev_art = 'no previous value'
+  newNoteL = []
+  for i in range(len(self.notes)):
+  note = self.notes[i]
+  prev_note = self.notes[i-1]
+  #if prev_note.tied:
+  #  note.dynS = ' '
+  #  note.artS = ' '
+  newNoteL.append(note)
+  self.notes = []
+  for note in newNoteL:
+  self.notes.append(note)
+
+  def removeAdjacentStaccatos(self):
+  """
+  Cycles through note durations [1, 2, 4, 8]. For each of those
+  durations, if it finds two adjacent notes with exactly the same
+  pitch, dynamics, and articulations, it changes the subsequent
+  notes into rests if the articulations are either 'staccato' or
+  'staccatissimo'.
+  """
+  massageL = []
+  each_durL = [1, 2, 4, 8]
+  for each_dur in each_durL:
+  filledI = 0
+  for i in range(len(self.notes)):
+  note = self.notes[i]
+  p_note = self.notes[i-1]
+  if not note.tuplet:
+    if note.artS in ['staccato', 'staccatissimo']:
+    if note.artS == p_note.artS:
+    if note.pitch == p_note.pitch or p_note.pitch == 'L':
+    if note.dynS == p_note.dynS:
+      note.pitch = 'L'
+      # 'L' for later note
+      # to be a rest
+  for note in self.notes:
+  if note.pitch == 'L':
+  note.setPitch(0)
+  massageL.append(note)
+  self.notes = []
+  for note in massageL:
+  self.notes.append(note)
+
+  def removeDuplicateNotes(self):
+  """
+  Eliminates Notes with pitch 'X' from the Note list.
+  """
+  massageL = []
+  for note in self.notes:
+  if not note.pitch == 'X':
+  massageL.append(note)
+  self.notes = []
+  for note in massageL:
+  self.notes.append(note)
+  def removeRestExpressions(self):
+  """
+  Goes through all the Notes in the Measure and removes any 
+  Articulations or Dynamic indicators if note.pitch is 'r'.
+  """
+  for note in self.notes:
+  if note.pitch == 'r':
+   pass
+   #note.artS = ' '
+   #note.dynS = ' '
+
+  def setFeedback(self, feedbackD):
+  """Puts the feedback Dict into the Measure instance."""
+  self.feedbackD = feedbackD
+
+  def setMeter(self, top, bottom=8):
+  """
+  Assigns values to its own states determining meter: top and bottom.
+  Meters range from 3/8 to 11/8, and are expressed as x/4 if possible.
+  """
+  if top == 'rand':
+  #using global topL list
+  top = random.choice(self.topL)
+  if top % 2 == 0:
+  top = top/2
+  bottom = 4
+  else:
+  bottom = 8
+  self.top = top  # meter numerator
+  self.bottom = bottom  # meter denominator
+  self.ticks = (top * self.ticksPerI * 16)/bottom
+  # how many ticks per measure?
+  self.length = self.ticks/self.ticksPerI
+  self.remaining = self.ticks
+
+  def sortBeats(self):
+  """
+  Re-arrange display (not real data) of notes and rests within a Measure
+  to correspond to traditional notation practice. For example:
+  replace "r8 ds2 r8" with "r8 ds8 ~ ds4 ~ ds8 r8"
+  """
+  backupNotesL = []
+  # keep a backup of the original note list for robustness
+  for note in self.notes:
+  backupNotesL.append(note)
+  newNotesL = []
+  filledI = 0
+  for note in self.notes:
+  if filledI % note.rvalues[self.bottom] == 0:
+  downbeatB = 1
+  else:
+  downbeatB = 0
+  if note.tuplet_type > 1:
+  newNotesL.append(note)
+  if not note.tuplet_num == note.tuplet_type:
+    filledI += note.dur
+  elif downbeatB:
+  newNotesL.append(note)
+  filledI += note.dur
+  else:
+  self.spreadNotes(filledI, note, newNotesL)
+  filledI += note.dur
+  if filledI == self.length:  # only effects changes if there is no
+  self.notes = []   # rhythmic error, i.e. too many or too
+  for note in newNotesL:  # few notes in the measure
+  self.notes.append(note)
+  if not self.checkProperlyFilled():
+  self.notes = []
+  for note in backupNotesL:
+  self.notes.append(note)
+
+  def spreadNotes(self, filledI, note, note_list):
+  """
+  Spreads out subnotes across the length of the input Note,
+  breaking at the beat.
+  """
+  new_dur = 0
+  original_dur = note.dur
+  next_beat = (filledI/note.rvalues[self.bottom])+1
+  next_beat *= note.rvalues[self.bottom]
+  space_left_in_beat = next_beat - filledI
+  if note.dur > space_left_in_beat and space_left_in_beat > 0:
+  note.makeTied()
+  self.fillBeat(note, space_left_in_beat, note_list)
+  self.fillBeat(note, original_dur-space_left_in_beat, note_list)
+  else:
+  note_list.append(note)
+
+  def tempoOut(self):
+  """
+  Outputs tempo indications according to MusicXML spec.
+  """
+  outputS = '  <direction><sound tempo="'
+  outputS += repr(self.tempo)
+  outputS += '" /></direction>\n'
+  return outputS
+
+  def tupletBeaming(self):
+  """
+  Goes through all the notes/rests in a tuplet set
+  and assigns note.first_non_rest_tuplet and
+  note.last_non_rest_tuplet as appropriate.
+  """
+  note_yetB = 0
+  for note in self.tupletL:
+  if not note_yetB:
+  if not note.pitch == 'r':
+    note.first_non_rest_tuplet = 1
+    note_yetB = 1
+  self.tupletL.reverse()
+  note_yetB = 0
+  for note in self.tupletL:
+  if not note_yetB:
+  if not note.pitch == 'r':
+    note.last_non_rest_tuplet = 1
+    note_yetB = 1
+  self.tupletL.reverse()
+  for note in self.tupletL:
+  if note.first_non_rest_tuplet and note.last_non_rest_tuplet:
+  note.first_non_rest_tuplet = 0
+  note.last_non_rest_tuplet = 0
+  # don't do beams unless there are 2+ notes per tuplet
+]]>
+</programlisting>

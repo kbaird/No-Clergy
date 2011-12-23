@@ -1,0 +1,94 @@
+<programlisting>
+<![CDATA[
+#!/usr/bin/env python
+# noclergy_header.py
+
+# Copyright (C) 2004 Kevin C. Baird
+#
+# This file is part of 'No Clergy'.
+#
+# No Clergy is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+
+import os, random, re, sys, time
+from noclergy_config import Config
+from noclergy_markov import Markov
+from xml.dom.ext.reader import Sax2
+
+########################################
+## BEGIN GLOBAL VARIABLE DECLARATIONS ##
+########################################
+
+config = Config()
+config.readFile()
+tupletpc = config.tupletpcI
+restpc = config.restpcI
+dynpc = config.dynpcI
+artpc = config.artpcI
+number_of_measures = config.numMeasuresI
+
+### END GLOBAL VARIABLE DECLARATIONS ###
+
+#######################################
+####### BEGIN CLASS DEFINITIONS #######
+#######################################
+
+class Header:
+  """
+  Prints Lilypond boilerplate (version, header, etc.)
+  identifying me and this piece No Clergy.
+  """
+
+  def __init__(self, config):
+  self.tupletpcI = config.tupletpcI
+  self.restpcI = config.restpcI
+  self.artpcI = config.artpcI
+  self.dynpcI = config.dynpcI
+
+  def ly_output(self, inst):
+  outputS = ''
+  outputS += '\\version "2.2.6"\n'
+  outputS += '\\include "english.ly"\n'
+  outputS += '\\header {\n'
+  outputS += '  title = "No Clergy"\n'
+  self.subtitleS = '  subtitle = "('
+  self.subtitleS += 'tupletpc=' + repr(self.tupletpcI) + ', '
+  self.subtitleS += 'restpc=' + repr(self.restpcI) + ', '
+  self.subtitleS += 'artpc=' + repr(self.artpcI) + ', '
+  self.subtitleS += 'dynpc=' + repr(self.dynpcI)
+  self.subtitleS += ')"\n'
+  outputS += self.subtitleS
+  # turn this back on if checking pc 
+  # variables is useful for debugging
+  outputS += '  instrument = '
+  if inst == 'sax':
+  outputS += '"Saxophone"'
+  elif inst == 'clar':
+  outputS += '"Clarinet"'
+  elif inst == 'vn':
+  outputS += '"Violin"'
+  outputS += '\n'
+  outputS += '  composer = "Kevin C. Baird"\n'
+  outputS += '  tagline = "'
+  outputS += 'Copyright (c) 2004, Kevin C. Baird, '
+  outputS += 'Released under the GNU General Public License '
+  outputS += '(http://www.gnu.org)'
+  outputS += '"\n'
+  outputS += '}\n'
+  outputS += '##(set-global-staff-size 23)\n'
+  return outputS
+
+######## END CLASS DEFINITIONS ########
+]]>
+</programlisting>

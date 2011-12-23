@@ -1,0 +1,116 @@
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+	"http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
+<!ENTITY kbaird SYSTEM "./chapters/kbaird.dbk">
+<!ENTITY colophon SYSTEM "./chapters/colophon.dbk">
+<!ENTITY copyright SYSTEM "./chapters/copyright.dbk">
+<!ENTITY dedication SYSTEM "./chapters/dedication.dbk">
+<!ENTITY revisions SYSTEM "./chapters/revisions.dbk">
+<!ENTITY variables SYSTEM "./chapters/note_on_variables.dbk">
+
+<!ENTITY part01 SYSTEM "./chapters/part01.dbk">
+<!ENTITY abstract_preface SYSTEM "./chapters/abstract_preface.dbk">
+<!ENTITY setup_chapter SYSTEM "./chapters/setup_chapter.dbk">
+<!ENTITY performance_chapter SYSTEM "./chapters/performance_chapter.dbk">
+
+<!ENTITY sample_output SYSTEM "./chapters/sample_output.dbk">
+
+<!ENTITY python_modules SYSTEM "./chapters/python_modules.dbk">
+<!ENTITY configSet SYSTEM "./chapters/python_source/noclergy_configSet.dbk">
+<!ENTITY header SYSTEM "./chapters/python_source/noclergy_header.dbk">
+<!ENTITY markov SYSTEM "./chapters/python_source/noclergy_markov.dbk">
+<!ENTITY measure SYSTEM "./chapters/python_source/noclergy_measure.dbk">
+<!ENTITY note SYSTEM "./chapters/python_source/noclergy_note.dbk">
+<!ENTITY object SYSTEM "./chapters/python_source/noclergy_object.dbk">
+<!ENTITY paper SYSTEM "./chapters/python_source/noclergy_paper.dbk">
+<!ENTITY piece SYSTEM "./chapters/python_source/noclergy_piece.dbk">
+<!ENTITY score SYSTEM "./chapters/python_source/noclergy_score.dbk">
+
+<!ENTITY python_scripts SYSTEM "./chapters/python_scripts.dbk">
+<!ENTITY cleanup SYSTEM "./chapters/python_source/cleanup.py">
+<!ENTITY make_ly SYSTEM "./chapters/python_source/make_ly.py">
+<!ENTITY mutate SYSTEM "./chapters/python_source/mutate.py">
+<!ENTITY mutate_config SYSTEM "./chapters/python_source/mutate_config.py">
+
+<!ENTITY config_txt SYSTEM "./chapters/config.txt">
+<!ENTITY feedback_html SYSTEM "./chapters/feedback_html.dbk">
+<!ENTITY feedback_cgi SYSTEM "./chapters/feedback_cgi.dbk">
+<!ENTITY start_cgi SYSTEM "./chapters/start_cgi.dbk">
+
+<!ENTITY shell_scripts SYSTEM "./chapters/shell_scripts.dbk">
+<!ENTITY flush_dvi_pdf_ps SYSTEM "./chapters/shell_source/flush_dvi_pdf_ps.sh">
+<!ENTITY flush_feedback SYSTEM "./chapters/shell_source/flush_feedback.sh">
+<!ENTITY nc_backup SYSTEM "./chapters/shell_source/nc_backup.sh">
+<!ENTITY nc_functions SYSTEM "./chapters/shell_source/nc_functions.sh">
+<!ENTITY noclergy SYSTEM "./chapters/shell_source/noclergy.sh">
+<!ENTITY setup SYSTEM "./chapters/shell_source/setup.sh">
+<!ENTITY mv_oldfiles SYSTEM "./chapters/shell_source/mv_oldfiles.sh">
+<!ENTITY mv_output SYSTEM "./chapters/shell_source/mv_output.sh">
+
+<!ENTITY bibliography SYSTEM "./chapters/bibliography.dbk">
+
+<!ENTITY gpl SYSTEM "./chapters/gpl.dbk">
+<!ENTITY mit "The Massachusetts Institute of Technology">
+<!ENTITY ora "O'Reilly &amp; Associates, Inc">
+]>
+
+<!-- 
+To output this and other large files, edit 
+/etc/texmf/texmf.d/96JadeTeX.cnf and 
+/etc/texmf/texmf.d/96passivetex.cnf, changing pool_size to 2000000 (or 
+higher) and multiplying hash_extra and max_strings variables by 10. 
+
+Then run the command update-texmf
+
+Worked for me.
+-->
+
+<!-- 
+IMPORTANT PASSIVETEX PROBLEM:
+The "-4 pc" stems from PassiveTex being unable to read subtraction of a 
+negative value in margins. If this happens, edit 
+/usr/share/sgml/docbook/stylesheet/xsl/nwalsh/fo/pagesetup.xsl
+such that margin.left.outer and margin.left.inner are simple values:
+
+<xsl:param name="margin.left.outer">
+  <xsl:value-of select="$page.margin.outer"/>
+</xsl:param>
+
+-->
+
+<book>
+ <bookinfo>
+  <title>No Clergy</title>
+  <subtitle>
+  Generation of Notated Music Based on Audience Feedback in Real Time 
+  Using Python, Music<acronym role="eXtensible Markup Language">XML</acronym> 
+  and <acronym role="GNU's Not Unix!">GNU</acronym> Lilypond
+  </subtitle>
+  &kbaird;
+  &copyright;
+  &revisions;
+  <abstract>
+   <para>
+A dissertation submitted to the Faculty of the Graduate School of The 
+State University of New York at Buffalo in partial fulfillment of the 
+requirements for the degree of Doctor of Philosophy, Department of Music
+   </para>
+   <para>Major Professor: Cort Lippe</para>
+  </abstract>
+  <pubdate>[defense date]</pubdate>
+  <!-- Use a preface for the abstract to comply with UB formatting -->
+ </bookinfo>
+
+&dedication;
+&abstract_preface;
+
+&part01;
+&sample_output;
+&python_modules;
+&python_scripts;
+&shell_scripts;
+
+&bibliography;
+&gpl;
+&colophon;
+
+</book>

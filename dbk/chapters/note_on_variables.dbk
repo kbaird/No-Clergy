@@ -1,0 +1,20 @@
+<formalpara>
+<title>A note on <application>Python</application> variables</title>
+<para>
+In my <application>Python</application> programs, I often use a 
+convention whereby the last character of a variable's name is an 
+upper-case letter representing the variable type. 
+<emphasis role="strong">I</emphasis> signifies an integer, 
+<emphasis role="strong">S</emphasis> signifies a string, 
+<emphasis role="strong">L</emphasis> signifies a list, 
+<emphasis role="strong">D</emphasis> signifies a dictionary (called a 
+<quote>hash</quote> in some other languages), and 
+<emphasis role="strong">B</emphasis> signifies a integer variable 
+treated as a boolean. True booleans were added to 
+<application>Python</application> after I started
+the project, and I saw no need to revise, given that ease of Debian
+package installation and backward compatibility were of greater value to
+me than avoiding integer variables which can be tested for truth value
+just as easily as a true boolean.
+</para>
+</formalpara>

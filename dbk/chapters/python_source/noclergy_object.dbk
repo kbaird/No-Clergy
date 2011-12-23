@@ -1,0 +1,76 @@
+<programlisting>
+<![CDATA[
+#!/usr/bin/env python
+# noclergy_object.py
+
+# Copyright (C) 2004 Kevin C. Baird
+#
+# This file is part of 'No Clergy'.
+#
+# No Clergy is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+class Object:
+  """Superclass, contains Methods used by multiple objects."""
+
+  def __init__(self):
+  self.mutatingB = 0
+
+  def addVariables(self, config):
+  """
+  Reads 'global' configuration variables from 
+  the Config 'wrapper' Object.
+  """
+  self.config = config
+  self.tupletpcI = config.tupletpcI
+  self.restpcI = config.restpcI
+  self.artpcI = config.artpcI
+  self.dynpcI = config.dynpcI
+  self.numMeasuresI = config.numMeasuresI
+  self.ticksPerI = config.ticksI
+  self.instS = config.instS
+  self.masterTupletL = config.masterTupletL
+  self.tempTupletL = config.tempTupletL
+  self.topL = config.topL
+
+  def bound(self, minval, maxval, value):
+  """
+  Returns value, ensuring that it is >= minval and <= maxval.
+  """
+  value = self.getMax(minval, value)
+  value = self.getMin(maxval, value)
+  return value
+
+  def getMax(self, a, b):
+  """
+  Returns the greater of two arguments.
+  """
+  outputI = a
+  if outputI < b:
+    outputI = b
+  return outputI
+
+  def getMin(self, a, b):
+  """
+  Returns the lesser of two arguments.
+  """
+  outputI = a
+  if outputI > b:
+    outputI = b
+  return outputI
+
+  def setMutatingStatus(self, statusB):
+  self.mutatingB = statusB
+]]>
+</programlisting>

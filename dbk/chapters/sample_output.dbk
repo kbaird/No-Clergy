@@ -1,0 +1,675 @@
+<part>
+<title>
+Sample Notated Output
+</title>
+
+<partintro>
+<para>
+Includes inline print-quality images of output for each instrument, 
+however many pages are required for a full run of the piece.
+I have ten pages for each instrument to demonstrate
+multi-page pagination with something like the right page count. 
+</para>
+<para>
+These samples use the values of 
+<varname>tupletpc</varname> = <literal>5</literal>, 
+<varname>restpc</varname> = <literal>5</literal>, 
+<varname>artpc</varname> = <literal>-3</literal>, and 
+<varname>dynpc</varname> = <literal>-3</literal> in the file 
+<filename>/var/www/noclergy/feedback.html</filename> described later in 
+its own section. Therefore, the parts should demonstrate a slow 
+progression such that the later pages have much higher ratios of tuplets 
+to non-tuplets and rests to notes, and a more moderate decrease in the 
+number of articulatory and dynamic markings.
+</para>
+</partintro>
+
+<chapter>
+<title>
+Clarinet
+</title>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata 
+	align="center"
+	depth="7in"
+	fileref="images/score_output/clar01.pdf" 
+	format="PDF" scalefit="1"/>
+</imageobject>
+<imageobject>
+<imagedata 
+	align="center"
+	fileref="images/score_output/clar01.png" 
+	format="PNG" scale="100"/>
+</imageobject>
+<textobject>
+<phrase>Clarinet page #1</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata 
+	align="center"
+	depth="7in"
+	fileref="images/score_output/clar02.pdf" 
+	format="PDF" scalefit="1"/>
+</imageobject>
+<imageobject>
+<imagedata 
+	align="center"
+	fileref="images/score_output/clar02.png" 
+	format="PNG" scale="100"/>
+</imageobject>
+<textobject>
+<phrase>Clarinet page #2</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata 
+	align="center"
+	depth="7in"
+	fileref="images/score_output/clar03.pdf" 
+	format="PDF" scalefit="1"/>
+</imageobject>
+<imageobject>
+<imagedata 
+	align="center"
+	fileref="images/score_output/clar03.png" 
+	format="PNG" scale="100"/>
+</imageobject>
+<textobject>
+<phrase>Clarinet page #3</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata 
+	align="center"
+	depth="7in"
+	fileref="images/score_output/clar04.pdf" 
+	format="PDF" scalefit="1"/>
+</imageobject>
+<imageobject>
+<imagedata 
+	align="center"
+	fileref="images/score_output/clar04.png" 
+	format="PNG" scale="100"/>
+</imageobject>
+<textobject>
+<phrase>Clarinet page #4</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata 
+	align="center"
+	depth="7in"
+	fileref="images/score_output/clar05.pdf" 
+	format="PDF" scalefit="1"/>
+</imageobject>
+<imageobject>
+<imagedata 
+	align="center"
+	fileref="images/score_output/clar05.png" 
+	format="PNG" scale="100"/>
+</imageobject>
+<textobject>
+<phrase>Clarinet page #5</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata 
+	align="center"
+	depth="7in"
+	fileref="images/score_output/clar06.pdf" 
+	format="PDF" scalefit="1"/>
+</imageobject>
+<imageobject>
+<imagedata 
+	align="center"
+	fileref="images/score_output/clar06.png" 
+	format="PNG" scale="100"/>
+</imageobject>
+<textobject>
+<phrase>Clarinet page #6</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata 
+	align="center"
+	depth="7in"
+	fileref="images/score_output/clar07.pdf" 
+	format="PDF" scalefit="1"/>
+</imageobject>
+<imageobject>
+<imagedata 
+	align="center"
+	fileref="images/score_output/clar07.png" 
+	format="PNG" scale="100"/>
+</imageobject>
+<textobject>
+<phrase>Clarinet page #7</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata 
+	align="center"
+	depth="7in"
+	fileref="images/score_output/clar08.pdf" 
+	format="PDF" scalefit="1"/>
+</imageobject>
+<imageobject>
+<imagedata 
+	align="center"
+	fileref="images/score_output/clar08.png" 
+	format="PNG" scale="100"/>
+</imageobject>
+<textobject>
+<phrase>Clarinet page #8</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata 
+	align="center"
+	depth="7in"
+	fileref="images/score_output/clar09.pdf" 
+	format="PDF" scalefit="1"/>
+</imageobject>
+<imageobject>
+<imagedata 
+	align="center"
+	fileref="images/score_output/clar09.png" 
+	format="PNG" scale="100"/>
+</imageobject>
+<textobject>
+<phrase>Clarinet page #9</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata 
+	align="center"
+	depth="7in"
+	fileref="images/score_output/clar10.pdf" 
+	format="PDF" scalefit="1"/>
+</imageobject>
+<imageobject>
+<imagedata 
+	align="center"
+	fileref="images/score_output/clar10.png" 
+	format="PNG" scale="100"/>
+</imageobject>
+<textobject>
+<phrase>Clarinet page #10</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+</chapter>
+
+<chapter>
+<title>
+Saxophone
+</title>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata 
+	align="center"
+	depth="7in"
+	fileref="images/score_output/sax01.pdf" 
+	format="PDF" scalefit="1"/>
+</imageobject>
+<imageobject>
+<imagedata 
+	align="center"
+	fileref="images/score_output/sax01.png" 
+	format="PNG" scale="100"/>
+</imageobject>
+<textobject>
+<phrase>Saxophone page #1</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata 
+	align="center"
+	depth="7in"
+	fileref="images/score_output/sax02.pdf" 
+	format="PDF" scalefit="1"/>
+</imageobject>
+<imageobject>
+<imagedata 
+	align="center"
+	fileref="images/score_output/sax02.png" 
+	format="PNG" scale="100"/>
+</imageobject>
+<textobject>
+<phrase>Saxophone page #2</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata 
+	align="center"
+	depth="7in"
+	fileref="images/score_output/sax03.pdf" 
+	format="PDF" scalefit="1"/>
+</imageobject>
+<imageobject>
+<imagedata 
+	align="center"
+	fileref="images/score_output/sax03.png" 
+	format="PNG" scale="100"/>
+</imageobject>
+<textobject>
+<phrase>Saxophone page #3</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata 
+	align="center"
+	depth="7in"
+	fileref="images/score_output/sax04.pdf" 
+	format="PDF" scalefit="1"/>
+</imageobject>
+<imageobject>
+<imagedata 
+	align="center"
+	fileref="images/score_output/sax04.png" 
+	format="PNG" scale="100"/>
+</imageobject>
+<textobject>
+<phrase>Saxophone page #4</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata 
+	align="center"
+	depth="7in"
+	fileref="images/score_output/sax05.pdf" 
+	format="PDF" scalefit="1"/>
+</imageobject>
+<imageobject>
+<imagedata 
+	align="center"
+	fileref="images/score_output/sax05.png" 
+	format="PNG" scale="100"/>
+</imageobject>
+<textobject>
+<phrase>Saxophone page #5</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata 
+	align="center"
+	depth="7in"
+	fileref="images/score_output/sax06.pdf" 
+	format="PDF" scalefit="1"/>
+</imageobject>
+<imageobject>
+<imagedata 
+	align="center"
+	fileref="images/score_output/sax06.png" 
+	format="PNG" scale="100"/>
+</imageobject>
+<textobject>
+<phrase>Saxophone page #6</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata 
+	align="center"
+	depth="7in"
+	fileref="images/score_output/sax07.pdf" 
+	format="PDF" scalefit="1"/>
+</imageobject>
+<imageobject>
+<imagedata 
+	align="center"
+	fileref="images/score_output/sax07.png" 
+	format="PNG" scale="100"/>
+</imageobject>
+<textobject>
+<phrase>Saxophone page #7</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata 
+	align="center"
+	depth="7in"
+	fileref="images/score_output/sax08.pdf" 
+	format="PDF" scalefit="1"/>
+</imageobject>
+<imageobject>
+<imagedata 
+	align="center"
+	fileref="images/score_output/sax08.png" 
+	format="PNG" scale="100"/>
+</imageobject>
+<textobject>
+<phrase>Saxophone page #8</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata 
+	align="center"
+	depth="7in"
+	fileref="images/score_output/sax09.pdf" 
+	format="PDF" scalefit="1"/>
+</imageobject>
+<imageobject>
+<imagedata 
+	align="center"
+	fileref="images/score_output/sax09.png" 
+	format="PNG" scale="100"/>
+</imageobject>
+<textobject>
+<phrase>Saxophone page #9</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata 
+	align="center"
+	depth="7in"
+	fileref="images/score_output/sax10.pdf" 
+	format="PDF" scalefit="1"/>
+</imageobject>
+<imageobject>
+<imagedata 
+	align="center"
+	fileref="images/score_output/sax10.png" 
+	format="PNG" scale="100"/>
+</imageobject>
+<textobject>
+<phrase>Saxophone page #10</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+</chapter>
+
+<chapter>
+<title>
+Violin
+</title>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata 
+	align="center"
+	depth="7in"
+	fileref="images/score_output/vn01.pdf" 
+	format="PDF" scalefit="1"/>
+</imageobject>
+<imageobject>
+<imagedata 
+	align="center"
+	fileref="images/score_output/vn01.png" 
+	format="PNG" scale="100"/>
+</imageobject>
+<textobject>
+<phrase>Violin page #1</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata 
+	align="center"
+	depth="7in"
+	fileref="images/score_output/vn02.pdf" 
+	format="PDF" scalefit="1"/>
+</imageobject>
+<imageobject>
+<imagedata 
+	align="center"
+	fileref="images/score_output/vn02.png" 
+	format="PNG" scale="100"/>
+</imageobject>
+<textobject>
+<phrase>Violin page #2</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata 
+	align="center"
+	depth="7in"
+	fileref="images/score_output/vn03.pdf" 
+	format="PDF" scalefit="1"/>
+</imageobject>
+<imageobject>
+<imagedata 
+	align="center"
+	fileref="images/score_output/vn03.png" 
+	format="PNG" scale="100"/>
+</imageobject>
+<textobject>
+<phrase>Violin page #3</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata 
+	align="center"
+	depth="7in"
+	fileref="images/score_output/vn04.pdf" 
+	format="PDF" scalefit="1"/>
+</imageobject>
+<imageobject>
+<imagedata 
+	align="center"
+	fileref="images/score_output/vn04.png" 
+	format="PNG" scale="100"/>
+</imageobject>
+<textobject>
+<phrase>Violin page #4</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata 
+	align="center"
+	depth="7in"
+	fileref="images/score_output/vn05.pdf" 
+	format="PDF" scalefit="1"/>
+</imageobject>
+<imageobject>
+<imagedata 
+	align="center"
+	fileref="images/score_output/vn05.png" 
+	format="PNG" scale="100"/>
+</imageobject>
+<textobject>
+<phrase>Violin page #5</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata 
+	align="center"
+	depth="7in"
+	fileref="images/score_output/vn06.pdf" 
+	format="PDF" scalefit="1"/>
+</imageobject>
+<imageobject>
+<imagedata 
+	align="center"
+	fileref="images/score_output/vn06.png" 
+	format="PNG" scale="100"/>
+</imageobject>
+<textobject>
+<phrase>Violin page #6</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata 
+	align="center"
+	depth="7in"
+	fileref="images/score_output/vn07.pdf" 
+	format="PDF" scalefit="1"/>
+</imageobject>
+<imageobject>
+<imagedata 
+	align="center"
+	fileref="images/score_output/vn07.png" 
+	format="PNG" scale="100"/>
+</imageobject>
+<textobject>
+<phrase>Violin page #7</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata 
+	align="center"
+	depth="7in"
+	fileref="images/score_output/vn08.pdf" 
+	format="PDF" scalefit="1"/>
+</imageobject>
+<imageobject>
+<imagedata 
+	align="center"
+	fileref="images/score_output/vn08.png" 
+	format="PNG" scale="100"/>
+</imageobject>
+<textobject>
+<phrase>Violin page #8</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata 
+	align="center"
+	depth="7in"
+	fileref="images/score_output/vn09.pdf" 
+	format="PDF" scalefit="1"/>
+</imageobject>
+<imageobject>
+<imagedata 
+	align="center"
+	fileref="images/score_output/vn09.png" 
+	format="PNG" scale="100"/>
+</imageobject>
+<textobject>
+<phrase>Violin page #9</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata 
+	align="center"
+	depth="7in"
+	fileref="images/score_output/vn10.pdf" 
+	format="PDF" scalefit="1"/>
+</imageobject>
+<imageobject>
+<imagedata 
+	align="center"
+	fileref="images/score_output/vn10.png" 
+	format="PNG" scale="100"/>
+</imageobject>
+<textobject>
+<phrase>Violin page #10</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+</chapter>
+
+</part>

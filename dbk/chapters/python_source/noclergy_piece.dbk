@@ -1,0 +1,63 @@
+<programlisting>
+<![CDATA[
+#!/usr/bin/env python
+# noclergy_piece.py
+
+# Copyright (C) 2004 Kevin C. Baird
+#
+# This file is part of 'No Clergy'.
+#
+# No Clergy is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+class Piece:
+  """
+  The entire piece. This object exists to hold states and methods for
+  cross-fertilizing mutations between instruments.
+  """
+
+  def __init__(self, scoreL):
+  self.notes = []
+  self.pitches = []
+  self.durations = []
+  self.articulations = []
+  self.dynamics = []
+  self.scoreL = scoreL
+
+  def get_all_notes(self):
+  for score in self.scoreL:
+  score.get_all_notes()
+  self.notes.append(score.notes)
+  self.pitches.append(score.pitches)
+  self.durations.append(score.durations)
+  self.articulations.append(score.articulations)
+  self.dynamics.append(score.dynamics)
+
+  def sieve_pitches(self, scoreL, pitch_list, vary_amp=3):
+  for score in scoreL:
+  for measure in score.measures:
+  for note in measure.notes:
+    if not note.pitch == 'r':
+    if not pitch_list.count(note.midi_pitch % 12) > 0:
+    vary = random.randrange(-vary_amp, vary_amp-1)
+    if vary == 0:
+    vary += 1
+    note.setPitch(note.midi_pitch + vary)
+
+  def sort_notes_in_mm(self, scoreL):
+  for score in scoreL:
+  for measure in score.measures:
+  measure.notes.sort()
+]]>
+</programlisting>

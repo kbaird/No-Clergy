@@ -1,0 +1,53 @@
+<revhistory>
+
+ <revision>
+  <revnumber>1</revnumber>
+  <date>2004-03-22</date>
+  <revremark>first fleshing out</revremark>
+ </revision>
+
+ <revision>
+  <revnumber>2</revnumber>
+  <date>2004-04-01</date>
+  <revremark>
+	added localDTDpathS variable to noclergy_score.py, updated 
+	package versions after apt-get dist-upgrade, fixed minor 
+	errors in sample_score image prep scripts
+  </revremark>
+ </revision>
+
+ <revision>
+  <revnumber>3</revnumber>
+  <date>2004-07-06</date>
+  <revremark>
+	Program versions updated to reflect new versions in 
+	Debian-installer after hard drive crash. Fixed some 
+	typos.
+  </revremark>
+ </revision>
+
+ <revision>
+  <revnumber>4</revnumber>
+  <date>2004-08-31</date>
+  <revremark>
+	Incorporated Paper class inside Score, putting \paper
+	and \midi blocks after notes, as is correct. This allows 
+	for outputting to MIDI files. I also set a default 
+	progression for the 
+	<varname>tupletpc</varname>, 
+	<varname>restpc</varname>, 
+	<varname>artpc</varname> and 
+	<varname>dynpc</varname> variables, showing what effect 
+	they have on the output.
+  </revremark>
+ </revision>
+
+ <revision>
+  <revnumber>5</revnumber>
+  <date>2004-09-20</date>
+  <revremark>
+Altered to reflect a change in my dissertation defense committee membership.
+  </revremark>
+ </revision>
+
+</revhistory>

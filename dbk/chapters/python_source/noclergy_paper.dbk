@@ -1,0 +1,45 @@
+<programlisting>
+<![CDATA[
+#!/usr/bin/env python
+# noclergy_paper.py
+
+# Copyright (C) 2004 Kevin C. Baird
+#
+# This file is part of 'No Clergy'.
+#
+# No Clergy is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+class Paper:
+  """
+  This is basically just more boilerplate for Lilypond.
+  It prints paper and font size header information.
+  It also creates the \midi section to allow creation of 
+  a MIDI file. It gets passed Score.tempo.
+  """
+
+  def ly_output(self, tempo):
+  outputS = ''
+  #outputS += '##(set-global-staff-size 23)\n'
+  outputS += '\\paper {\n'
+  outputS += '  ##(paper-set-staff-size (* 23 pt))\n'
+  outputS += '  linewidth = 7.5 \\in\n'
+  outputS += '  indent = 0.5 \\in\n'
+  outputS += '}\n'
+  outputS += '\\midi {\n'
+  outputS += '  \\tempo 8=' + repr(tempo) + '\n'
+  outputS += '}\n'
+  return outputS
+]]>
+</programlisting>

@@ -1,0 +1,63 @@
+<part>
+<title>
+<application>Python</application> Modules
+</title>
+
+<partintro>
+<para>
+All <application>Python</application> Modules contain Class definitions 
+and are located in 
+<filename class="directory">~/NoClergy/Python/</filename>.
+</para>
+
+&variables;
+
+</partintro>
+
+<chapter>
+<title>ConfigSet</title>
+&configSet;
+</chapter>
+
+<chapter>
+<title>Header</title>
+&header;
+</chapter>
+
+<chapter>
+<title>Markov</title>
+&markov;
+</chapter>
+
+<chapter>
+<title>Measure</title>
+&measure;
+</chapter>
+
+<chapter>
+<title>Note</title>
+&note;
+</chapter>
+
+<chapter>
+<title>Object</title>
+&object;
+</chapter>
+
+<chapter>
+<title>Paper</title>
+&paper;
+</chapter>
+
+<chapter>
+<title>Piece</title>
+&piece;
+</chapter>
+
+<chapter>
+<anchor id="noclergy_score"/>
+<title>Score</title>
+&score;
+</chapter>
+
+</part>

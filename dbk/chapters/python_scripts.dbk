@@ -1,0 +1,107 @@
+<part>
+<title>
+<application>Python</application> Scripts and Config Files
+</title>
+
+<partintro>
+<para>
+All <application>Python</application> scripts are located in
+<filename class="directory">~/NoClergy/Python/</filename> 
+unless otherwise noted with an absolute pathname.
+</para>
+
+&variables;
+
+</partintro>
+
+<chapter>
+<title>
+cleanup.py
+</title>
+<programlisting>
+&cleanup;
+</programlisting>
+</chapter>
+
+<chapter>
+<title>
+make_ly.py
+</title>
+<programlisting>
+&make_ly;
+</programlisting>
+</chapter>
+
+<chapter>
+<title>
+mutate.py
+</title>
+<programlisting>
+&mutate;
+</programlisting>
+</chapter>
+
+<chapter>
+<title>
+mutate_config.py
+</title>
+
+<programlisting>
+&mutate_config;
+</programlisting>
+</chapter>
+
+<chapter>
+<title>
+/var/www/noclergy/config.txt
+</title>
+
+<programlisting>
+&config_txt;
+</programlisting>
+</chapter>
+
+<chapter>
+<title>
+/var/www/noclergy/feedback.html
+</title>
+
+<para>
+<filename class="symlink">feedback.html</filename> is located in
+<filename>/var/www/noclergy/feedback.html</filename> with a
+symbolic link in <filename class="directory">~/NoClergy/</filename>.
+</para>
+
+&feedback_html;
+
+<para>
+Feedback from the audience is written immediately after the
+<literallayout>&lt;!--begin--&gt;</literallayout> comment tag,
+most recent first, via the <filename>feedback.cgi</filename> script.
+</para>
+
+</chapter>
+
+<chapter>
+<title>
+/usr/lib/cgi-bin/feedback.cgi
+</title>
+
+<programlisting>
+&feedback_cgi;
+</programlisting>
+
+</chapter>
+
+<chapter>
+<title>
+/usr/lib/cgi-bin/start.cgi
+</title>
+
+<programlisting>
+&start_cgi;
+</programlisting>
+
+</chapter>
+
+</part>

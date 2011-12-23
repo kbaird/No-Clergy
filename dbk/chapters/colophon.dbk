@@ -1,0 +1,59 @@
+<colophon>
+<para>
+This dissertation was created with 
+<ulink url="http://www.docbook.org/">Docbook</ulink> on the same 
+<ulink url="http://www.debian.org/">Debian</ulink> 
+<acronym role="GNU's Not Unix!">GNU</acronym>/Linux system 
+that ran all the programs and served all the content in the course of 
+the piece.
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata 
+	align="center"
+	fileref="images/created-with-docbook-black.pdf" 
+	format="PDF"
+	scale="80"
+	valign="bottom"/>
+	<!-- 
+	experiment with scaling of this image, 
+	or try to get a print-resolution EPS
+	-->
+</imageobject>
+<imageobject>
+<imagedata 
+	align="center"
+	fileref="images/created-with-docbook-black.png" 
+	format="PNG"
+	valign="bottom"/>
+</imageobject>
+<textobject>
+<phrase>Created with Docbook</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+
+<para>
+<inlinemediaobject>
+<imageobject>
+<imagedata 
+	align="center"
+	fileref="images/openlogo.pdf" 
+	format="PDF"
+	valign="bottom"/>
+</imageobject>
+<imageobject>
+<imagedata 
+	align="center"
+	fileref="images/openlogo.png" 
+	format="PNG"
+	valign="bottom"/>
+</imageobject>
+<textobject>
+<phrase>Created with Debian</phrase>
+</textobject>
+</inlinemediaobject>
+</para>
+</colophon>

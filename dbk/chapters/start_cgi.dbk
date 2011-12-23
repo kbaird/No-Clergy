@@ -1,0 +1,58 @@
+<programlisting>
+<![CDATA[
+#!/usr/bin/env python
+"""start.cgi"""
+# put me in /usr/lib/cgi-bin/ on a Debian system
+# possibly elsewhere for other OSes
+# and give me permissions 755
+
+# Copyright (C) 2004 Kevin C. Baird
+#
+# This file is part of 'No Clergy'.
+#
+# No Clergy is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+baseURL = 'http://nibbler.med.buffalo.edu/noclergy/'
+
+import cgi, re
+form = cgi.FieldStorage()
+formS = "# No Clergy config.txt, written by start.cgi\n"
+for field in form:
+	if not field == 'number_of_measures':
+		formS += 'base_'
+	formS += field + ' = '
+	formS += form[field].value + '\n'
+
+configFile = open('/var/www/noclergy/config.txt', 'w')
+configFile.write(formS)
+configFile.close()
+
+print "Content-type: text/html\n"
+print '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"\n'
+print ' "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">\n'
+print '<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">\n'
+print "<head>\n"
+print '<meta http-equiv="refresh" content="10;'
+print 'url=' + baseURL + '" />\n'
+# TODO: change refresh value to match time needed for 
+# the python/lilypond procesing to happen
+print "<title>feedback results</title>\n"
+print "</head>\n"
+print "<body>\n"
+print "<h1>Thank you for submitting starting conditions</h1>\n"
+print "<p>The form will reload automatically.</p>\n"
+print "</body>\n</html>\n"
+]]>
+</programlisting>

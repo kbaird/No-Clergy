@@ -1,0 +1,54 @@
+<chapter>
+<title>
+Performance
+</title>
+
+<anchor id="performance"/>
+
+<para>
+When <link linkend="setup_sh"><filename>~/setup.sh</filename></link>
+is executed, initial random values are used to
+generate a first pass of musical notation for each of the performers. The semantic
+musical data are stored externally in a
+<ulink url="http://musicxml.org/">MusicXML</ulink> file, and are also rendered into
+an image file using <acronym>GNU</acronym>
+<ulink url="http://lilypond.org/"><application>Lilypond</application></ulink>.
+</para>
+
+<para>
+During the performance, audience members input data into their web forms
+as desired. This data (along with internal data resulting from analysis
+of the results of the initial run of the script) is then used to create
+subsequent generations of musical data.  Each performer plays the
+notation presented on his or her screen until
+<link linkend="ending_the_piece">the end of the piece</link>.
+</para>
+
+<para>
+The 2nd and later sets of musical notation are generated with the script 
+<link linkend="noclergy_sh"><filename>~/noclergy.sh</filename></link>,
+which reads both the audience feedback data and the previous musical
+material stored in the MusicXML files in order to generate each
+successive page of notation for each performer. It also moves old files
+into a storage location, ensuring that any later runs of the script will
+be based on the freshest available data.
+</para>
+
+<anchor id="ending_the_piece"/>
+<formalpara>
+<title>Ending the Piece</title>
+<para>
+The premiere will simply run each script a fixed number of times, ending
+the piece when there are no more new pages of notation. Other
+performances could simply loop, or have a cutoff condition (ending the
+piece when the rest-to-note ratio rises above a certain point, for
+example). The looping option would be especially appropriate for
+alterations of the piece to use machine-generated sounds 
+(<application>Csound</application>, or
+<application>Max/MSP</application>, for example), rather than live 
+acoustic performances.
+
+</para>
+</formalpara>
+
+</chapter>
