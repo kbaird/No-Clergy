@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" //><title>Chapter 23.  ~/nc_backup.sh</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="No Clergy" /><link rel="up" href="pt05.html" title="Part V.  Bash Shell Scripts" /><link rel="prev" href="pt05.html" title="Part V.  Bash Shell Scripts" /><link rel="next" href="ch24.html" title="Chapter 24.  nc_functions.sh" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 23. 
+~/nc_backup.sh
+</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="pt05.html">Prev</a> </td><th width="60%" align="center">Part V. 
+Bash Shell Scripts
+</th><td width="20%" align="right"> <a accesskey="n" href="ch24.html">Next</a></td></tr></table><hr /></div><div class="chapter" title="Chapter 23.  ~/nc_backup.sh"><div class="titlepage"><div><div><h2 class="title"><a id="idp18962552"></a>Chapter 23. 
+~/nc_backup.sh
+</h2></div></div></div><pre class="programlisting">
+#!/bin/bash
+# nc_backup.sh
+
+# Copyright (C) 2004 Kevin C. Baird
+#
+# This file is part of 'No Clergy'.
+#
+# No Clergy is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+# Kevin can be reached at 
+# kcbaird@world.oberlin.edu or 
+# http://kevinbaird.net
+
+# flush old dvi, ps, pdf files and make sure to backup 
+# feedback.cgi and start.cgi
+source ./NoClergy/flush_dvi_pdf_ps.sh
+cp /usr/lib/cgi-bin/feedback.cgi ./
+cp /usr/lib/cgi-bin/start.cgi ./
+
+# make bzip2 compressed tar archives with dated filenames
+tar -cvf nc_scripts$(date '+%Y_%m_%d-%H_%M_%S').tar ./*.sh ./*.cgi
+echo 'compressing scripts'
+bzip2 nc_scripts*.tar 
+rm feedback.cgi start.cgi
+tar -cvf nc_folder$(date '+%Y_%m_%d-%H_%M_%S').tar ./NoClergy/*
+echo 'compressing ~/NoClergy/ folder'
+bzip2 nc_folder*.tar 
+tar -cvf nc_web$(date '+%Y_%m_%d-%H_%M_%S').tar /var/www/noclergy/*
+echo 'compressing web'
+bzip2 nc_web*.tar 
+tar -cvf nc_dbk$(date '+%Y_%m_%d-%H_%M_%S').tar ./Diss_dbk/*
+echo 'compressing DocBook'
+bzip2 nc_dbk*.tar 
+
+# secure copy tarballs into diss_backups folder on other machine
+# 'kirk' is identified in /etc/hosts
+scp nc_scripts*.tar.bz2 kirk:/home/kbaird/diss_backups/
+scp nc_folder*.tar.bz2 kirk:/home/kbaird/diss_backups/
+scp nc_web*.tar.bz2 kirk:/home/kbaird/diss_backups/
+scp nc_dbk*.tar.bz2 kirk:/home/kbaird/diss_backups/
+
+# store backups in the backups folder
+mv nc_scripts*.tar.bz2 backups/
+mv nc_folder*.tar.bz2 backups/
+mv nc_web*.tar.bz2 backups/
+mv nc_dbk*.tar.bz2 backups/
+
+</pre></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="pt05.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="pt05.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch24.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Part V. 
+Bash Shell Scripts
+ </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 24. 
+nc_functions.sh
+</td></tr></table></div></body></html>

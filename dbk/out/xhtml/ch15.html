@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" //><title>Chapter 15.  cleanup.py</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="No Clergy" /><link rel="up" href="pt04.html" title="Part IV.  Python Scripts and Config Files" /><link rel="prev" href="pt04.html" title="Part IV.  Python Scripts and Config Files" /><link rel="next" href="ch16.html" title="Chapter 16.  make_ly.py" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 15. 
+cleanup.py
+</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="pt04.html">Prev</a> </td><th width="60%" align="center">Part IV. 
+<span class="application">Python</span> Scripts and Config Files
+</th><td width="20%" align="right"> <a accesskey="n" href="ch16.html">Next</a></td></tr></table><hr /></div><div class="chapter" title="Chapter 15.  cleanup.py"><div class="titlepage"><div><div><h2 class="title"><a id="idp18578360"></a>Chapter 15. 
+cleanup.py
+</h2></div></div></div><pre class="programlisting">
+#!/usr/bin/env python
+"""cleanup.py"""
+
+# Copyright (C) 2004 Kevin C. Baird
+#
+# This file is part of 'No Clergy'.
+#
+# No Clergy is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+import os, re, sys
+
+inst = sys.argv[1]
+argS = sys.argv[2]
+listdirS = 'lilypond/xml/' + inst + '/'
+bakdirS = 'lilypond/xml/bak/' + inst + '/'
+
+if argS == 'ls':
+  dir_listL = os.listdir(listdirS)
+  dir_listL.sort()
+  dir_listL.pop() # removes 'DTDs'
+  for item in dir_listL:
+  print 'list item =', listdirS, item
+  last_itemS = dir_listL.pop()
+  print 'last item =', listdirS, last_itemS
+  print
+
+elif argS == 'lsxml':
+  dir_listL = os.listdir(listdirS)
+  dir_listL.sort()
+  dir_listL.pop() # don't consider 'DTDs'
+  for item in dir_listL:
+  if item[-3:] == 'xml':
+  print 'list item =', listdirS, item
+  last_itemS = dir_listL.pop()
+  print 'last item =', listdirS, last_itemS
+  print
+
+elif argS == 'mv':
+  dir_listL = os.listdir(listdirS)
+  dir_listL.sort()
+  dir_listL.pop() # don't consider 'DTDs'
+  if len(dir_listL):
+  last_itemS = dir_listL.pop()
+  dir_listL.append(last_itemS)
+  for item in dir_listL:
+  if item[-3:] == 'xml':
+  if not item == last_itemS:
+    commandS = 'mv ' + listdirS + item
+    commandS += ' ' + bakdirS
+    os.popen2(commandS)
+
+if os.listdir(bakdirS):
+  dir_listL = os.listdir(bakdirS)
+  any_XML_files = 0
+  for item in dir_listL:
+  if item[-3:] == 'xml':
+  any_XML_files = 1
+
+if any_XML_files:  
+  os.popen2('bzip2 ' + bakdirS + '*.xml')
+
+</pre></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="pt04.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="pt04.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch16.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Part IV. 
+<span class="application">Python</span> Scripts and Config Files
+ </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 16. 
+make_ly.py
+</td></tr></table></div></body></html>

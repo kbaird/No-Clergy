@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" //><title>Chapter 12. Paper</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="No Clergy" /><link rel="up" href="pt03.html" title="Part III.  Python Modules" /><link rel="prev" href="ch11.html" title="Chapter 11. Object" /><link rel="next" href="ch13.html" title="Chapter 13. Piece" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 12. Paper</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch11.html">Prev</a> </td><th width="60%" align="center">Part III. 
+<span class="application">Python</span> Modules
+</th><td width="20%" align="right"> <a accesskey="n" href="ch13.html">Next</a></td></tr></table><hr /></div><div class="chapter" title="Chapter 12. Paper"><div class="titlepage"><div><div><h2 class="title"><a id="idp18654456"></a>Chapter 12. Paper</h2></div></div></div><pre class="programlisting">
+
+#!/usr/bin/env python
+# noclergy_paper.py
+
+# Copyright (C) 2004 Kevin C. Baird
+#
+# This file is part of 'No Clergy'.
+#
+# No Clergy is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+class Paper:
+  """
+  This is basically just more boilerplate for Lilypond.
+  It prints paper and font size header information.
+  It also creates the \midi section to allow creation of 
+  a MIDI file. It gets passed Score.tempo.
+  """
+
+  def ly_output(self, tempo):
+  outputS = ''
+  #outputS += '##(set-global-staff-size 23)\n'
+  outputS += '\\paper {\n'
+  outputS += '  ##(paper-set-staff-size (* 23 pt))\n'
+  outputS += '  linewidth = 7.5 \\in\n'
+  outputS += '  indent = 0.5 \\in\n'
+  outputS += '}\n'
+  outputS += '\\midi {\n'
+  outputS += '  \\tempo 8=' + repr(tempo) + '\n'
+  outputS += '}\n'
+  return outputS
+
+</pre></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch11.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="pt03.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch13.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 11. Object </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 13. Piece</td></tr></table></div></body></html>

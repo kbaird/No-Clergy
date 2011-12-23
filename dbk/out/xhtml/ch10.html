@@ -1,0 +1,709 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" //><title>Chapter 10. Note</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="No Clergy" /><link rel="up" href="pt03.html" title="Part III.  Python Modules" /><link rel="prev" href="ch09.html" title="Chapter 9. Measure" /><link rel="next" href="ch11.html" title="Chapter 11. Object" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 10. Note</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch09.html">Prev</a> </td><th width="60%" align="center">Part III. 
+<span class="application">Python</span> Modules
+</th><td width="20%" align="right"> <a accesskey="n" href="ch11.html">Next</a></td></tr></table><hr /></div><div class="chapter" title="Chapter 10. Note"><div class="titlepage"><div><div><h2 class="title"><a id="idp18654088"></a>Chapter 10. Note</h2></div></div></div><pre class="programlisting">
+
+#!/usr/bin/env python
+# noclergy_note.py
+
+# Copyright (C) 2004 Kevin C. Baird
+#
+# This file is part of 'No Clergy'.
+#
+# No Clergy is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+from noclergy_config import Config
+from noclergy_object import Object
+import random, re
+
+class Note(Object):
+  """
+  This is an individual sound/silence event within a Measure. It has states for
+  pitch, duration, articulation, and dynamics, and tuplet (1 if it is a part of
+  a tuplet, 0 otherwise), tuplet_type (1 for normal notes), and tuplet_num (what
+  number am I out of 3 or 5 or whatever?). self.pitch is 'r' if it's a rest, and
+  duration is the number of 16th notes in its normal (i.e. non-tuplet) note type,
+  rather than the note type itself. So an eighth note has a dur of 2, not 8.
+  """
+
+  def __init__(self, transpose):
+  self.first_sound_in_score = 0
+  self.previous_dyn_output = ''
+  self.artS = ''
+  self.autoBeamSuspendB = 0
+  self.autoBeamResumeB = 0
+  self.autoBeamS = ''
+  self.dynS = ''
+  self.dynL = ['ppp', 'pp', 'p', 'mp', 'mf', 'f', 'ff', 'fff']
+  self.artL = ['staccatissimo', 'staccato', 'marcato',
+     'accent', ' ', 'portato', 'tenuto']
+  self.pcL = ['c', 'cs', 'd', 'ef', 'e', 'f',
+    'fs', 'g', 'af', 'a', 'bf', 'b']
+  self.midi_pitch = 0
+  self.octave = ''
+  self.durL = [1, 2, 4, 4, 8, 8, 8, 8, 8, 8, 8, 8, 8, 16]
+  # Relative ratios of note durations are designed to 
+  # result in a uniform distribution at the end
+  self.durL = [1, 2, 4, 8, 16] # TODO: not uniform, simple
+  self.dur16L = [1, 1, 1, 1, 1, 2, 2, 4, 8, 16]
+  # after a 16th, 16ths more likely
+  self.rvalues = {1:16, 2:8, 3:8, 4:4, 6:4, 8:2, 12:2, 16:1}
+  self.filewrite_durtypeD = {
+  16:'whole', 12:'half', 8:'half', 6:'quarter', 4:'quarter',
+   3: 'eighth', 2:'eighth', 1:'sixteenth', ' ': 'quarter'}
+  self.transposition = transpose
+  self.tuplet = 0   # is this note a tuplet?
+  self.tuplet_type = 1  # change to 3, 5, etc. if tuplet
+  self.tuplet_num = 1   # 1st is 1, 2nd is 2... 5th is 5
+  self.first_non_rest_tuplet = 0
+  self.last_non_rest_tuplet = 0
+  # which is not a rest (for beaming in Lilypond)
+  self.tied = 0
+
+  def calcSpace(self, minval, maxval, center):
+  """
+  Used by self.varyGauss. Returns the lesser of 
+  distance from center to either end, unless that value 
+  would be less than 1. In that case it returns the greater.  
+  The reasoning behind this is to prevent extreme values from 
+  being 'locked in', preventing bouncing back by Markovian 
+  or audience feedback data.
+  """  
+  top_rangeI = maxval - center
+  bottom_rangeI = center - minval
+  space = self.getMin(top_rangeI, bottom_rangeI)
+  if space &lt; 1:
+  space = self.getMax(top_rangeI, bottom_rangeI)
+  return space
+
+  def fixVaryDirection(self, variation, force):
+  """
+  Prevents the variation from bouncing back against the 
+  direction of desired motion (according to the audience).
+  """
+  if not force == 0:
+  # only bother with this if there is a clear 
+  # direction (i.e., not 0) from the audience
+  direction = force/abs(force) # -1 or +1
+  if (variation / direction) &lt; 0:
+  # negative division result, therefore
+  # they are going in different directions
+  variation *= -1 
+  # therefore, reverse variation direction
+  return variation
+
+  def copy(self, note):
+  """Makes this Note a copy of the Note argument."""
+  self.artS = note.artS
+  self.autoBeamSuspendB = note.autoBeamSuspendB
+  self.autoBeamResumeB = note.autoBeamResumeB
+  self.autoBeamS = note.autoBeamS
+  self.dur = note.dur
+  self.dynS = note.dynS
+  self.first_non_rest_tuplet = note.first_non_rest_tuplet
+  self.last_non_rest_tuplet = note.last_non_rest_tuplet
+  self.midi_pitch = note.midi_pitch
+  self.pitch = note.pitch
+  self.octave = note.octave
+  self.tuplet = note.tuplet
+  self.tuplet_type = note.tuplet_type
+  self.tuplet_num = note.tuplet_num
+  self.ticksPerI = note.ticksPerI
+  self.tupletpcI = note.tupletpcI
+  self.restpcI = note.restpcI
+  self.artpcI = note.artpcI
+  self.dynpcI = note.dynpcI
+  self.numMeasuresI = note.numMeasuresI
+  self.instS = note.instS
+  self.setRange()
+  try:
+  self.instS = note.instS
+  except:
+  pass
+  self.masterTupletL = note.masterTupletL
+  self.tempTupletL = note.tempTupletL
+  self.topL = note.topL
+
+  def declareFirstSoundInScore(self):
+  """
+  Method name should be self-explanatory.
+  The purpose is to make sure the first note of
+  a Score always has an explicit dynamic mark.
+  """
+  self.first_sound_in_score = 1
+
+  def gauss(self, sigma, mu, dice=20):
+  """
+  sigma = standard deviation
+  mu = mean
+  dice = number of random numbers to sum
+  """
+  sum = 0
+  for die in range(dice):
+  sum += random.randrange(2)
+  gauss = sigma * (sum-(dice/2))
+  return gauss + mu
+
+  def getInstRangeMulti(self, midi_pitch):
+  """
+  Returns 0 if within range, -1 if too high, and 1 if too low.
+  These values are used for multiplication outside of this Method.
+  Multiply a Note's output from this Method by 12 and add it to
+  the Note's midi_pitch to bring it back in the instrument's range.
+  """
+  if midi_pitch &gt; self.highest:
+  return -1
+  elif midi_pitch &lt; self.lowest and not midi_pitch == 0:
+  #print 'DEBUG: found a too low note'
+  return 1
+  else:
+  return 0
+
+  def initTuplet(self, type, tuplet_num):
+  """
+  Makes the Note the first of a set of tuplets of length type.
+  """
+  self.tuplet = 1
+  self.tuplet_type = type
+  self.tuplet_num = tuplet_num
+
+  def filewrite(self):
+  """
+  This method returns a string consisting of an entire &lt;note&gt;
+  element compliant with the MusicXML DTD. It is called within
+  the Measure object, which contains a list of Notes.
+  """
+  XMLfileS = ''
+  XMLfileS += '  &lt;note&gt;\n'
+  if self.first_sound_in_score:
+  XMLfileS += '   &lt;!-- 1st note in score --&gt;\n'
+  if self.pitch == 'r':
+  XMLfileS += '   &lt;rest/&gt;\n'
+  else:
+  self.pitch_typeS = 'pitch'
+  XMLfileS += '   &lt;pitch&gt;'
+  if re.search("'", self.octave):
+  self.octaveS = repr(len(re.findall("'", self.octave))+2)
+  else:
+  self.octaveS = repr(2-len(re.findall(",", self.octave)))
+  self.alterS = ''
+  XMLfileS += '&lt;step&gt;' + self.pitch[0] + '&lt;/step&gt;'
+  if len(self.pitch) &gt; 1:
+  if self.pitch[1] == 'f':
+    self.alterS += '-1'
+  elif self.pitch[1] == 's':
+    self.alterS += '1'
+  if not self.alterS == '':
+  XMLfileS += '&lt;alter&gt;' + self.alterS + '&lt;/alter&gt;'
+  XMLfileS += '&lt;octave&gt;' + self.octaveS + '&lt;/octave&gt;'
+  XMLfileS += '&lt;/pitch&gt;\n'
+  XMLfileS += '   &lt;duration&gt;'
+  XMLfileS += repr(self.rvalues[self.dur])
+  XMLfileS += '&lt;/duration&gt;\n'
+  XMLfileS += '   &lt;type&gt;'
+  XMLfileS += self.filewrite_durtypeD[self.dur]
+  XMLfileS += '&lt;/type&gt;\n'
+  if self.tuplet:
+  XMLfileS += '  &lt;time-modification&gt;\n'
+  XMLfileS += '   &lt;actual-notes&gt;'
+  XMLfileS += repr(self.tuplet_type)
+  XMLfileS += '&lt;/actual-notes&gt;\n'
+  XMLfileS += '   &lt;normal-notes&gt;'
+  XMLfileS += repr(self.get_nearest_2power(self.tuplet_type))
+  XMLfileS += '&lt;/normal-notes&gt;\n'
+  XMLfileS += '  &lt;/time-modification&gt;\n'
+  if not self.artS == ' ' or not self.dynS == ' ':
+  if not self.artS == '' or not self.dynS == '':
+  self.articulationS = ' '
+  self.technicalS = ' '
+  XMLfileS += '   &lt;notations&gt;\n'
+  if self.tuplet:
+    if self.tuplet_num == 1:
+    XMLfileS += '  &lt;tuplet type="start"/&gt;\n'
+    elif self.tuplet_num == self.tuplet_type:
+    XMLfileS += '  &lt;tuplet type="stop"/&gt;\n'
+  if self.artS == '&lt;stopped /&gt;':
+    self.technicalS += self.artS
+  elif self.artS == 'upbow':
+    self.technicalS += '&lt;up-bow /&gt;'
+  elif self.artS == 'downbow':
+    self.technicalS += '&lt;down-bow /&gt;'
+  XMLfileS += '  &lt;dynamics&gt;&lt;'
+  XMLfileS += self.dynS
+  XMLfileS += '/&gt;&lt;/dynamics&gt;\n'
+  XMLfileS += '&lt;!-- previous dyn out = ' + self.previous_dyn_output + ' --&gt;\n'
+  if not self.technicalS == ' ':
+    XMLfileS += '   &lt;technical&gt;\n'
+    XMLfileS += '  ' + self.technicalS + '\n'
+    XMLfileS += '   &lt;/technical&gt;\n'
+  if self.artS == 'accent':
+    normal_artB = 1
+  elif self.artS == 'staccato':
+    normal_artB = 1
+  elif self.artS == 'tenuto':
+    normal_artB = 1
+  elif self.artS == 'staccatissimo':
+    normal_artB = 1
+  else:
+    normal_artB = 0
+  if normal_artB:
+    self.articulationS += '&lt;' + self.artS + ' /&gt;'
+  elif self.artS == 'marcato':
+    self.articulationS += '&lt;strong-accent /&gt;'
+  elif self.artS == 'portato':
+    self.articulationS += '&lt;detached-legato /&gt;'
+  if not self.articulationS == ' ':
+    XMLfileS += '  &lt;articulations&gt;'
+    XMLfileS += self.articulationS[1:]
+    XMLfileS += '&lt;/articulations&gt;\n'
+  XMLfileS += '   &lt;/notations&gt;\n'
+  XMLfileS += '  &lt;/note&gt;\n'
+  return XMLfileS
+
+  def fromXML_DOM(self, noteTag):
+  """Look for tags in noteTag."""
+  art = ''
+  XMLartD = {'strong-accent': 'marcato', 'detached-legato': 'portato',
+    'up-bow': 'upbow', 'down-bow': 'downbow'}
+  if noteTag.getElementsByTagName('rest'):
+  self.pitch = 'r'
+  for durTag in noteTag.getElementsByTagName('duration'):
+  dur = int(durTag.firstChild.data)
+  self.dur = 16 / dur
+  try:
+  for dynTag in noteTag.getElementsByTagName('dynamics'):
+  self.dynS = dynTag.firstChild.tagName
+  except:
+  pass
+  try:
+  for artTag in noteTag.getElementsByTagName('articulations'):
+  art = artTag.firstChild.tagName
+  except:
+  try:
+  for techTag in noteTag.getElementsByTagName('technical'):
+    art = techTag.firstChild.tagName
+  except:
+  art = ' '
+  if XMLartD.has_key(art):
+  art = XMLartD[art]
+  self.artS += art
+  for pitchTag in noteTag.getElementsByTagName('pitch'):
+  for stepTag in pitchTag.getElementsByTagName('step'):
+  step = stepTag.firstChild.data
+  try:
+  alterTag = pitchTag.getElementsByTagName('alter')[0]
+  alter = int(alterTag.firstChild.data)
+  except:
+  alter = 0 # note might be a natural
+  for octaveTag in pitchTag.getElementsByTagName('octave'):
+  octave = int(octaveTag.firstChild.data)
+  self.getXMLpitch(step, alter, octave)
+  try:
+  for timeModTag in noteTag.getElementsByTagName('time-modification'):
+  actualNotesNode = timeModTag.getElementsByTagName('actual-notes')
+  # 2-step, made a Node to fix wrapping in printed output
+  for actualNotesTag in actualNotesNode:
+    self.tuplet_type = int(actualNotesTag.firstChild.data)
+    self.tuplet = 1
+  except:
+  pass
+  try:
+  for notationsTag in noteTag.getElementsByTagName('notations'):
+  pass
+  except: # if no notations tag
+  self.artS = ' '
+
+  def get_nearest_2power(self, i):
+  """
+  Returns the nearest power of 2 below the argument. Useful for
+  determining how many non-tuplet notes a tuplet occurs within the space
+  of. E.g: 3 triplets occur within the space of 2, and this method
+  returns 2 when given 3, etc. It does not support more exotic
+  tuplet types (such as 7 in the space of 8).
+  """
+  k = 1
+  while k &lt; i:
+  k *= 2
+  return k / 2
+
+  def get_nearest_2power_equal(self, i):
+  """
+  As above, equal to arg is OK too.
+  """
+  k = 1
+  while k &lt;= i:
+  k *= 2
+  return k / 2
+
+  def getXMLpitch(self, step, alter, octave):
+  """
+  Extracts step, alter and octave tags from 
+  XML and generates internal pitch.
+  """
+  midi_pitchD = {'c':0, 'd':2, 'e':4, 'f':5, 'g':7, 'a':9, 'b':11}
+  pitchout = ''
+  stepS = str(step)
+  pitchout += stepS
+  if alter == -1:
+  pitchout += 'f'
+  elif alter == 1:
+  pitchout += 's'
+  if octave &gt; 2:
+  octaveS = "'" * (octave - 2)
+  elif octave &lt; 2:
+  octaveS = "," * (-(2 - octave))
+  else:
+  octaveS = ''
+  midi_pitch = (octave * 12) + midi_pitchD[stepS] + alter
+  self.midi_pitch = midi_pitch
+  self.pitch = pitchout
+  self.octave = octaveS
+
+  def ly_pitch(self):
+  """
+  Prepares a Note's pitch data for transposed Lilypond output. It is
+  generalized enough to handle transposition values other than the ones I
+  happen to be using. I've decided to store the musical data in the XML
+  files in concert pitch and only worry about transposition for display.
+  I currently determine transposition values from the instrument name and
+  a Dictionary, but I should eventually write it the XML file.
+  """
+  if not self.pitch == 'r':
+  pitchI = self.midi_pitch - self.transposition
+  pitch = self.pcL[pitchI % 12]
+  octave = self.octave
+  if self.transposition &lt; 0:
+  if (pitchI % 12) &lt; abs(self.transposition):
+    if len(octave) &gt; 0:
+    if octave[len(octave)-1] == ',':
+    octave = octave[0:len(octave)-1]
+    else:
+    pass
+  elif self.transposition &gt; 0:
+  if (pitchI % 12) &lt; abs(self.transposition):
+    if len(octave) &gt; 0:
+    if octave[len(octave)-1] == "'":
+    octave = octave[0:len(octave)-1]
+    else:
+    pass
+  else:
+  pitch = self.pitch
+  octave = self.octave
+  return pitch, octave
+
+  def makeTied(self):
+  self.tied = 1
+
+  def mutateByFeedback(self, typeS, feedbackD):
+  """
+  feedbackD contains entries like {'pitch': 5} 
+  for maximum high pitch, etc. charS and charL 
+  stand for the characteristic to be mutated.
+  """
+  if typeS == 'pitch' and not self.midi_pitch == 0:
+  # midi_pitch of 0 is a rest - this pitch mutation method
+  # is intended only for actual sounding notes
+  #print 'DEBUG: now mutating pitch by feedback'
+  minval = self.lowest
+  maxval = self.highest
+  current = self.midi_pitch
+  try:
+  force = feedbackD[typeS]
+  except:
+  force = 0
+  try:
+  width = feedbackD[typeS + 'var']
+  except:
+  width = 1
+  if not force == 0:
+  variation = self.varyGauss(minval, maxval, current, force, width)
+  else:
+  variation = 0
+  new_pitch = current + variation
+  new_pitch = self.bound(self.lowest, new_pitch, self.highest)
+  if new_pitch &gt; -1:
+  self.setPitch(new_pitch)
+  elif not typeS == 'pitch': # not mutating pitch
+  if typeS == 'art':
+  #print 'DEBUG: now mutating art by feedback'
+  charS = self.artS
+  charL = self.artL
+  elif typeS == 'dur':
+  #print 'DEBUG: now mutating dur by feedback'
+  charS = self.dur # actually an int
+  charL = self.durL
+  elif typeS == 'dyn':
+  #print 'DEBUG: now mutating dyn by feedback'
+  charS = self.dynS
+  charL = self.dynL
+  minval = 0
+  maxval = len(charL)-1
+  current = charL.index(charS)
+  try:
+  force = feedbackD[typeS]
+  except:
+  force = 0
+  try:
+  width = feedbackD[typeS + 'var']
+  except:
+  width = 1
+  if not force == 0:
+  variation = self.varyGauss(minval, maxval, current, force, width)
+  variation = self.fixVaryDirection(variation, force)
+  else:
+  variation = 0
+  index = current + variation
+  index = self.bound(minval, index, maxval)
+  #print 'DEBUG ', typeS, ': current =', current, '\t', 
+  #print 'force =', force, '\t', 
+  #print 'width =', width, '\t',
+  #print 'variation =', variation, '\t', 
+  #print 'new index =', index
+  if typeS == 'art':
+  self.setArticulation(charL[index])
+  if typeS == 'dur':
+  self.setDuration(charL[index])
+  elif typeS == 'dyn':
+  self.setDynamics(charL[index])
+
+  def octaveMark(self, midi_pitch):
+  out = ''
+  if not midi_pitch == 0:
+  if midi_pitch &gt; 59:
+  out += "'"
+  if midi_pitch &gt; 71:
+  out += "'"
+  if midi_pitch &lt; 47:
+  out += ","
+  return out
+
+  def ly_outputArt_old(self):
+  """Outputs articulatory marks if appropriate."""
+  outputS = ''
+  outputS += '\n% self.dynS = ' + self.dynS
+  outputS += ', self.previous_dyn_output = ' + self.previous_dyn_output + '\n'
+  #if not self.artS == ' ' and not self.artS == '':
+  #  if not self.pitch == 'r' and not self.tied:
+  #  # don't output articulations on rests
+  #  # or tied notes, or if empty
+  #  outputS += '-\\' + self.artS
+  if self.first_sound_in_score:
+  outputS += '-\\' + self.dynS
+  # always output dynamics on the first note of a Score
+  self.previous_dyn_output = self.dynS
+  elif not self.dynS == self.previous_dyn_output:
+  # don't output repeated dynamics
+  if not self.pitch == 'r' and not self.tied:
+  # don't output dynamics on rests or tied notes
+  outputS += '-\\' + self.dynS
+  outputS += '\n% self.dynS != self.previous_dyn_output'
+  outputS += '\n% self.dynS = ' + self.dynS
+  outputS += ', self.previous_dyn_output = ' + self.previous_dyn_output
+  outputS += ', self.tuplet = ' + repr(self.tuplet) + '\n\n'
+  self.previous_dyn_output = self.dynS
+  return outputS
+
+  def ly_outputDyn(self, prev_dyn_out):
+  """Outputs articulatory marks if appropriate."""
+  outputS = ''
+  self.previous_dyn_output = prev_dyn_out
+  if not self.dynS == self.previous_dyn_output:
+  # don't output repeated dynamics
+  if not self.pitch == 'r' and not self.tied:
+  # don't output dynamics on rests or tied notes
+  outputS += '-\\' + self.dynS
+  self.previous_dyn_output = self.dynS
+  return outputS
+
+  def ly_outputTupletOpen(self):
+  """Prints Lilypond-compliant text for the Note."""
+  outputS = ''
+  outputS += '\n  '
+  #outputS += '\\autoBeamOff\n'
+  outputS += '\\times '
+  outputS += repr(self.tuplet_type-1) + '/'
+  outputS += repr(self.tuplet_type)
+  outputS += ' { '
+  return outputS
+
+  def ly_output(self, prev_dyn_out, prev_midi_pitch):
+  """Prints Lilypond-compliant text for the Note."""
+  outputS = ''
+  self.rhythm = self.rvalues[self.dur]
+  if not self.midi_pitch == 0:
+  if self.midi_pitch &lt; self.lowest:
+  outputS += '\n%too low\n'
+  self.midi_pitch += self.getInstRangeMulti(self.midi_pitch)
+  # keep notes within instrument range
+  auto_beam_turned_off = 0
+  if self.autoBeamSuspendB:
+  if self.tuplet:
+  outputS += '\n\\autoBeamOff\n'
+  if self.tuplet and self.tuplet_num == 1:
+  # first tuplet of the set
+  outputS += self.ly_outputTupletOpen()
+  pitch, octave = self.ly_pitch()
+  outputS += pitch + octave + str(self.rhythm)
+  if self.dur &lt; 4:
+  # no beams for 1/4 notes or longer
+  if self.first_non_rest_tuplet:
+  # first tuplet note which isn't a rest
+  outputS += '['
+  elif self.last_non_rest_tuplet:
+  # first tuplet note which isn't a rest
+  outputS += ']'
+  outputS += self.ly_outputDyn(prev_dyn_out)
+  if not self.artS == ' ' and not self.midi_pitch == 0:
+    outputS += '-\\' + self.artS
+  if self.tied and not self.pitch == 'r':
+  outputS += ' ~'
+  if self.tuplet_type &gt; 1:
+  if self.tuplet_num == self.tuplet_type:
+  # last tuplet of the set, note or rest
+  outputS += ' }\n'
+  #outputS += ' %' + str(self.midi_pitch) + '\n'
+  if self.autoBeamResumeB:
+  outputS += '\n\\autoBeamOn\n'
+  return outputS
+
+  def setArticulation(self, art):
+  """Accepts literal values, 'rand', 'shorter', or 'longer'."""
+  if art == 'rand':
+  if random.randrange(100)+1 &lt; self.artpcI and not self.pitch == 'r':
+  art = random.choice(self.artL)
+  else:
+  art = ' '
+  elif art == 'shorter':
+  try: art = self.artL[self.artL.index(self.artS) - 1]
+  except: art = self.artS
+  elif art == 'longer':
+  try: art = self.artL[self.artL.index(self.artS) + 1]
+  except: art = self.artS
+  self.artS = art
+
+  def setDuration(self, dur, last_dur=0):
+  """Accepts literal values or 'rand'."""
+  if dur == 'rand':
+  if last_dur == 1:
+  dur = random.choice(self.dur16L)
+  else:
+  dur = random.choice(self.durL)
+  self.dur = dur
+  self.ticks = dur * self.ticksPerI / self.tuplet_type
+
+  def setDynamics(self, dyn, prev_dyn='mp'):
+  """Accepts literal values, 'rand', 'softer', or 'louder'."""
+  self.previous_dyn_output = prev_dyn
+  if dyn == 'rand':
+  if random.randrange(100)+1 &lt; self.dynpcI and not self.pitch == 'r':
+  dyn = random.choice(self.dynL)
+  else:
+  if prev_dyn == 'no previous dynamic':
+    prev_dyn ='mp'
+  dyn = prev_dyn
+  elif dyn == 'softer':
+  try: dyn = self.dynL[self.dynL.index(self.dyn) - 1]
+  except: dyn = self.dynS
+  elif dyn == 'louder':
+  try: dyn = self.dynL[self.dynL.index(self.dyn) + 1]
+  except: dyn = self.dynS
+  self.dynS = dyn
+
+  def setPitch(self, pitch):
+  """Accepts literal values or 'rand'."""
+  self.setRange()
+  if pitch == 'rand':
+  if random.randrange(100)+1 &gt; self.restpcI:
+  pitch = random.randrange(self.lowest, self.highest)
+  else:
+  pitch = 0
+  if pitch == 0:
+  self.midi_pitch = pitch
+  self.pitch = 'r'
+  self.octave = ''
+  else:
+  self.midi_pitch = pitch
+  self.pitch = self.pcL[self.midi_pitch % 12]
+  self.octave = self.octaveMark(self.midi_pitch+2)
+
+  def setRange(self):
+  """Accepts literal values or 'rand'."""
+  if self.instS == 'sax':
+  self.lowest = 60
+  self.highest = 88
+  elif self.instS == 'clar':
+  self.lowest = 52
+  self.highest = 89
+  elif self.instS == 'vn':
+  self.lowest = 55
+  self.highest = 88
+  else:
+  self.lowest = 60
+  self.highest = 88
+
+  def setTicks(self, ticks):
+  """Accepts literal values only."""
+  self.ticks = ticks
+
+  def varyGauss(self, minval, maxval, center, force, width):
+  """
+  divisor_mult = portion of range to go across, for example:
+  divisor_mult = 2, means that maximum values range halfway to
+  the extreme end. divisor_mult = 4 means it ranges 1 
+  quarter of the way, etc.
+  minval, maxval = boundaries of range of variation
+  center = mean of variation within range
+  force = audience feedback (-5 to 5)
+  -5 = much less (of whatever characteristic)
+  +5 = much more (of whatever characteristic)
+  width = audience feedback (-5 to 5)
+  -5 = very narrow variation (i.e. tight Gaussian)
+  +5 = very wide variation (i.e. flat)
+  """
+  # combine (0-width) flat dists over inst's range (min 0)
+  # + (width) Gaussian distributions (min 0)
+  # Gaussian dists are self.gauss(1, center, space), where
+  # space = lesser of (max-center) or (center-min)
+  #TODO: fix space - if it's at end end point, there's
+  # no room for it to go the other way either with space = 0
+  divisor_mult = 1 # range the whole way
+  outputI = 0
+  space = self.calcSpace(minval, maxval, center)
+  divisor = force * divisor_mult
+  orig_center = center
+  #print '#DEBUG: center =', center, '\t',
+  center += (force * space / divisor)
+  #print 'new center =', center
+  space = self.calcSpace(minval, maxval, center)
+  #print '\nDEBUG: note.varyGauss'
+  #print 'DEBUG: space =', space, '\t'
+  #print 'DEBUG: minval =', minval, '\t'
+  #print 'DEBUG: center =', center, '\t'
+  #print 'DEBUG: maxval =', maxval, '\n'
+  numUniformsI = width
+  if numUniformsI &lt; 1:
+  numUniformsI = 1
+  numGaussiansI = (0-width)
+  if numGaussiansI &lt; 1:
+  numGaussiansI = 1
+  for gaussians in range(numGaussiansI):
+  outputI += self.gauss(1, center, space)
+  for uniforms in range(numUniformsI):
+  outputI += random.randrange(minval, maxval+1)
+  outputI /= (numGaussiansI + numUniformsI)
+  return outputI-orig_center
+
+</pre></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch09.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="pt03.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch11.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 9. Measure </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 11. Object</td></tr></table></div></body></html>

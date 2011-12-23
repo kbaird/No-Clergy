@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" //><title>Chapter 16.  make_ly.py</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="No Clergy" /><link rel="up" href="pt04.html" title="Part IV.  Python Scripts and Config Files" /><link rel="prev" href="ch15.html" title="Chapter 15.  cleanup.py" /><link rel="next" href="ch17.html" title="Chapter 17.  mutate.py" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 16. 
+make_ly.py
+</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch15.html">Prev</a> </td><th width="60%" align="center">Part IV. 
+<span class="application">Python</span> Scripts and Config Files
+</th><td width="20%" align="right"> <a accesskey="n" href="ch17.html">Next</a></td></tr></table><hr /></div><div class="chapter" title="Chapter 16.  make_ly.py"><div class="titlepage"><div><div><h2 class="title"><a id="idp18579832"></a>Chapter 16. 
+make_ly.py
+</h2></div></div></div><pre class="programlisting">
+#!/usr/bin/env python
+"""make_ly.py"""
+
+# Copyright (C) 2004 Kevin C. Baird
+#
+# This file is part of 'No Clergy'.
+#
+# No Clergy is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+import fileinput, os, random, re, sys, time
+from noclergy_config import Config
+from noclergy_header import Header
+from noclergy_score import Score
+from noclergy_measure import Measure
+from noclergy_note import Note
+from xml.dom.ext.reader import Sax2
+
+########################################
+## BEGIN GLOBAL VARIABLE DECLARATIONS ##
+########################################
+
+configDir = '/var/www/noclergy'
+
+master_tupletL = []
+# this is the tuplet list that gets used later in the program
+temp_tupletL = [3, 3, 3, 5, 5]
+# what types of non-power of 2 tuplets are allowed?
+# repetitions give greater likelihood to repeated options, i.e.
+# [3, 3, 3, 5, 5] means 60% of all tuplets will be triplets of
+# some sort, and 40% of all tuplets will be fives of some sort
+# (subject to other limitations specific to the placement of
+# the tuplet set in the score)
+
+ticks = 1
+# how many timing ticks (a la MIDI) per 16th note?
+while len(temp_tupletL):
+  # tuplets start from a base 1/4 note value (ticks * 4),
+  # and divide by their tuplet_type to get their ticks value
+  tuplet_mod = temp_tupletL.pop()
+  master_tupletL.append(tuplet_mod)   
+  ticks *= tuplet_mod
+
+# list of meter numerators
+topL = [3, 4, 4, 5, 6, 6, 7, 8, 8, 9, 10, 10]
+# x/4 meters are twice as likely, due to repetition above
+
+try:
+  inst = sys.argv[1]
+except:
+  inst = "you didn't specify an instrument with sys.argv[1]"
+
+instD = {}
+instsFile = open(configDir + '/insts.txt', 'r')
+for line in instsFile.readlines():
+  instS = line.split(' ')[1]
+  transpositionS = line.split(' ')[3].strip()
+  transpositionI = int(transpositionS)
+  instD[instS] = transpositionI
+instsFile.close()
+scoreL = []
+
+### END GLOBAL VARIABLE DECLARATIONS ###
+
+#######################################
+########### BEGIN MAIN BODY ###########
+#######################################
+
+# BEGIN instance declarations
+config = Config()
+config.readFile()
+config.masterTupletL = master_tupletL
+config.tempTupletL = temp_tupletL
+config.ticksI = ticks
+config.instS = inst
+config.topL = topL
+header = Header(config)
+score = Score(instD[inst])
+score.addVariables(config)
+# END instance declarations
+
+print header.ly_output(inst)
+score.setTempo(180, 180) # min, max
+score.construct(config)
+score.filewrite(inst)
+print score.printopen(inst)
+#print score.debug_out()
+print score.ly_output(config)
+print score.printclose()
+
+############ END MAIN BODY ############
+
+</pre></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch15.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="pt04.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch17.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 15. 
+cleanup.py
+ </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 17. 
+mutate.py
+</td></tr></table></div></body></html>

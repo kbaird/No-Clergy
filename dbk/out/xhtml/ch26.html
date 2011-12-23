@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" //><title>Chapter 26.  ~/setup.sh</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="No Clergy" /><link rel="up" href="pt05.html" title="Part V.  Bash Shell Scripts" /><link rel="prev" href="ch25.html" title="Chapter 25.  ~/noclergy.sh" /><link rel="next" href="ch27.html" title="Chapter 27.  flush_dvi_pdf_ps.sh" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 26. 
+~/setup.sh
+</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch25.html">Prev</a> </td><th width="60%" align="center">Part V. 
+Bash Shell Scripts
+</th><td width="20%" align="right"> <a accesskey="n" href="ch27.html">Next</a></td></tr></table><hr /></div><div class="chapter" title="Chapter 26.  ~/setup.sh"><div class="titlepage"><div><div><h2 class="title"><a id="idp18934896"></a>Chapter 26. 
+~/setup.sh
+</h2></div></div></div><a id="setup_sh"></a><pre class="programlisting">
+#!/bin/bash
+# setup.sh
+
+# Copyright (C) 2004 Kevin C. Baird
+#
+# This file is part of 'No Clergy'.
+#
+# No Clergy is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+# Kevin can be reached at 
+# kcbaird@world.oberlin.edu or 
+# http://kevinbaird.net
+
+source ~/NoClergy/nc_functions.sh
+# define functions and variables
+
+source NoClergy/mv_oldfiles.sh 2&gt;/dev/null
+source NoClergy/flush_feedback.sh 2&gt;/dev/null
+
+egrep '^inst' $configFile &gt; $configDir/insts.txt
+instList=$(sed 's# =.*$##g' /var/www/noclergy/insts.txt | sed 's#inst ##g')
+
+for inst in $instList; do	# written with 3 different for loops, 
+  makeLy $inst			# one for each operation - inefficient 
+done				# at first glance. I wanted to keep each
+				# instrument in as close sync as 
+for inst in $instList; do	# possible, and wrote it this way to 
+  renderLy $inst		# avoid having the first instrument's 
+done				# notation already rendered and shown
+				# on screen while the 2nd instrument was 
+for inst in $instList; do	# still waiting for the Lilypond markup 
+  cleanup $inst			# to be made.
+done
+
+source NoClergy/mv_output.sh
+
+
+</pre></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch25.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="pt05.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch27.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 25. 
+~/noclergy.sh
+ </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 27. 
+flush_dvi_pdf_ps.sh
+</td></tr></table></div></body></html>

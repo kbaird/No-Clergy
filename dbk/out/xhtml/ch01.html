@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" //><title>Chapter 1.  Setup</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="No Clergy" /><link rel="up" href="pt01.html" title="Part I.  Setup and Performance" /><link rel="prev" href="pt01.html" title="Part I.  Setup and Performance" /><link rel="next" href="ch02.html" title="Chapter 2.  Performance" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 1. 
+Setup
+</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="pt01.html">Prev</a> </td><th width="60%" align="center">Part I. 
+Setup and Performance
+</th><td width="20%" align="right"> <a accesskey="n" href="ch02.html">Next</a></td></tr></table><hr /></div><div class="chapter" title="Chapter 1.  Setup"><div class="titlepage"><div><div><h2 class="title"><a id="idp15331168"></a>Chapter 1. 
+Setup
+</h2></div></div></div><p>
+<cite>No Clergy</cite> runs on a
+<a class="ulink" href="http://www.debian.org/" target="_top">Debian GNU/Linux</a>
+system on Intel x86 architecture 
+(although the architecture shouldn't matter), using
+<em>Sarge</em>'s packages of
+</p><div class="itemizedlist"><ul class="itemizedlist" type="bullet" compact="compact"><li class="listitem" style="list-style-type: disc"><span class="application">apache</span> (1.3.31-4)</li><li class="listitem" style="list-style-type: disc"><span class="application">lilypond</span> (2.2.6)</li><li class="listitem" style="list-style-type: disc"><span class="application">python</span> (2.3.4-5)</li><li class="listitem" style="list-style-type: disc"><span class="application">python-xml</span> (0.8.3-5)</li></ul></div><p>
+Specific version numbers following in parentheses. This system (assumed 
+to have the hostname 
+<code class="filename">nibbler.med.buffalo.edu</code>) should be set up to serve 
+web documents.
+</p><p>
+The performers (clarinet, soprano saxophone, and violin in the default configuration)
+should be in the center of an informal performance space, with one web browser equipped computer for each performer. The computers should be arranged such that the screens face
+outward and the performers face inward. There should be ample room for audience members
+to observe each performer's screen. Each performer should browse their web browser to
+<code class="filename">
+http://nibbler.med.buffalo.edu/noclergy/clar/
+</code>
+ (in the base of the clarinettist),
+<code class="filename">
+http://nibbler.med.buffalo.edu/noclergy/sax/
+</code>
+ (in the case of the saxophonist), or
+<code class="filename">
+http://nibbler.med.buffalo.edu/noclergy/vn/
+</code>
+ (in the case of the violinist). Differing
+instrumentation will require creation of appropriate web directories and 
+minor re-writing of some of the 
+<span class="application">Python</span> and 
+<span class="application">bash</span> scripts.
+</p><p>
+For the audience, one or more web browsers should be open to the 
+<code class="filename">noclergy/</code> directory on the host 
+(assumed to be
+<code class="systemitem">nibbler.med.buffalo.edu</code>).
+</p><p>
+The <span class="application">Python</span> script 
+<a class="link" href="ch14.html#noclergy_score"><code class="filename">noclergy_score.py</code></a> 
+contains a variable <code class="varname">localDTDpathS</code>, which is the 
+pathname pointing to the local copy of the MusicXML 
+<acronym title="">DTD</acronym>. This will need to be altered if the piece is run 
+on a server other than mine.
+</p></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="pt01.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="pt01.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch02.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Part I. 
+Setup and Performance
+ </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 2. 
+Performance
+</td></tr></table></div></body></html>

@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" //><title>Chapter 14. Score</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="No Clergy" /><link rel="up" href="pt03.html" title="Part III.  Python Modules" /><link rel="prev" href="ch13.html" title="Chapter 13. Piece" /><link rel="next" href="pt04.html" title="Part IV.  Python Scripts and Config Files" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 14. Score</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch13.html">Prev</a> </td><th width="60%" align="center">Part III. 
+<span class="application">Python</span> Modules
+</th><td width="20%" align="right"> <a accesskey="n" href="pt04.html">Next</a></td></tr></table><hr /></div><div class="chapter" title="Chapter 14. Score"><div class="titlepage"><div><div><h2 class="title"><a id="idp18611608"></a>Chapter 14. Score</h2></div></div></div><a id="noclergy_score"></a><pre class="programlisting">
+
+#!/usr/bin/env python
+# noclergy_score.py
+
+# Copyright (C) 2004 Kevin C. Baird
+#
+# This file is part of 'No Clergy'.
+#
+# No Clergy is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+
+from noclergy_config import Config
+from noclergy_markov import Markov
+from noclergy_measure import Measure
+from noclergy_note import Note
+from noclergy_object import Object
+from noclergy_paper import Paper
+from xml.dom.ext.reader.Sax2 import FromXmlStream
+import os, random, re, time
+
+#######################
+# BEGIN LOCAL VARIABLES
+#######################
+
+localDTDpathS = '"file:///home/kbaird/NoClergy/MusicXML/DTDs/partwise.dtd"'
+# local version of the MusicXML DTD, alter pathname 
+# based on one's own username or DTD location
+
+#######################
+# END LOCAL VARIABLES
+#######################
+
+class Score(Object):
+  """
+  This and its methods manage everything within
+  the '\score' brackets in a Lilypond file.
+  """
+
+  def __init__(self, transpose):
+  self.configDir = '/var/www/noclergy/'
+  self.configFileName = self.configDir + 'config.txt'
+  self.feedbackFileName = '/var/www/noclergy/feedback.html'
+  self.durL = [1, 2, 4, 4, 8, 8, 8, 8, 8, 8, 8, 8, 8, 16]
+  self.has_declared_first_sound = 0
+  self.previous_dyn = 'mp'
+  self.measures = []
+  self.notes = []
+  self.pitches = []
+  self.durations = []
+  self.articulations = []
+  self.dynamics = []
+  measuresL = []
+  self.measures_so_far = 0
+  self.numMeasuresI = 10
+  self.step = 0
+  self.alter = 0
+  self.octave = 0
+  self.tempo = 0
+  self.transposition = transpose
+
+  def construct(self, config):
+  """Loop each measure and append to Score's list of measures."""
+  self.numMeasuresI = config.numMeasuresI
+  while self.measures_so_far &lt; self.numMeasuresI:
+  measure = Measure(self.measures_so_far+1, self.transposition)
+  measure.addVariables(config)
+  measure.construct(self.tempo, self.previous_dyn, self.has_declared_first_sound)
+  while not measure.checkProperlyFilled():
+  measure = Measure(self.measures_so_far+1, self.transposition)
+  measure.addVariables(config)
+  measure.construct(self.tempo, self.previous_dyn, self.has_declared_first_sound)
+  self.measures.append(measure)
+  self.has_declared_first_sound = measure.has_declared_first_sound
+  self.measures_so_far += 1
+  self.rememberDynamics(measure)
+
+  def debug_out(self):
+  """Debugging output."""
+  outputS = ''
+  for measure in self.measures:
+  outputS += '% MEASURE #'
+  outputS += str(measure.num)
+  outputS += ', meter = '
+  outputS += str(measure.top)
+  outputS += '/'
+  outputS += str(measure.bottom)
+  outputS += ', length = '
+  outputS += str(measure.top*16/measure.bottom)
+  outputS += '\n% '
+  for note in measure.notes:
+  outputS += note.pitch
+  outputS += str(note.dur)
+  outputS += ' '
+  outputS += '\n'
+  return outputS
+
+  def digit_fix(self, timeS):
+  if len(timeS) == 1:
+  timeS = '0' + timeS
+  return timeS
+
+  def fileread(self, inst, config):
+  """
+  Read most recent file './nc/yyyy_ddd/hh_mm_ss.xml'
+  (written by self.filewrite), assign to XMLfile for processing.
+  """
+  #self.config = config
+  self.instS = inst
+  self.good_filesL = []
+  self.dirS = 'lilypond/xml/' + inst + '/'
+  self.filenameL = os.listdir(self.dirS)
+  for fileS in self.filenameL:
+  if fileS[-3:] == 'xml':
+  self.good_filesL.append(fileS)
+  self.good_filesL.sort()
+  self.filenameS = self.dirS + self.good_filesL.pop()
+  self.XMLfile = open(self.filenameS, 'r')
+  XMLdoc = FromXmlStream(self.XMLfile)
+  self.fromXML_DOM(XMLdoc)
+
+  def filewrite(self, inst):
+  """
+  Write to file './nc/yyyy_MM_dd-hh_mm_ss.xml,
+  where yyyy is time.localtime(time())[0], MM is [1],
+  dd is [2], hh is [3], mm is [4], ss is [5]
+  """
+  for measure in self.measures:
+  measure.removeDuplicateNotes()
+  self.filenameS = 'lilypond/xml/' + inst + '/'
+  self.timeL = time.localtime(time.time())
+  self.filenameS += repr(self.timeL[0]) + '_' # yyyy
+  self.filenameS += self.digit_fix(repr(self.timeL[1])) + '_' # MM
+  self.filenameS += self.digit_fix(repr(self.timeL[2])) + '-' # dd
+  self.filenameS += self.digit_fix(repr(self.timeL[3])) + '_' # hh
+  self.filenameS += self.digit_fix(repr(self.timeL[4])) + '_' # mm
+  self.filenameS += self.digit_fix(repr(self.timeL[5])) + '.xml' # ss
+  XMLfile = open(self.filenameS, 'w')
+  XMLfile.write('&lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;\n')
+  XMLfile.write('&lt;!DOCTYPE score-partwise PUBLIC\n')
+  XMLfile.write('"-//Recordare//DTD MusicXML 1.0 Partwise//EN"\n')
+  #XMLfile.write('"http://www.musicxml.org/dtds/partwise.dtd"&gt;\n')
+  # online non-local version of the MusicXML DTD
+  XMLfile.write(localDTDpathS + '&gt;\n')
+  # local version of the MusicXML DTD, alter pathname 
+  # based on one's own username or DTD location
+  XMLfile.write('&lt;score-partwise&gt;\n')
+  XMLfile.write('&lt;identification&gt;\n')
+  XMLfile.write('  &lt;creator&gt;Kevin C. Baird&lt;/creator&gt;\n')
+  XMLfile.write('  &lt;rights&gt;Copyright (c) 2004 Kevin C. Baird, ')
+  XMLfile.write('released under the GNU GPL&lt;/rights&gt;\n')
+  XMLfile.write('&lt;/identification&gt;\n')
+  XMLfile.write(' &lt;part-list&gt;\n')
+  XMLfile.write('  &lt;score-part id="P1"&gt;\n')
+  XMLfile.write('   &lt;part-name&gt;' + inst + '&lt;/part-name&gt;\n')
+  XMLfile.write('  &lt;/score-part&gt;\n')
+  XMLfile.write(' &lt;/part-list&gt;\n')
+  XMLfile.write(' &lt;part id="P1"&gt;\n')
+  for measure in self.measures:
+  XMLfile.write(measure.filewrite(inst))
+  XMLfile.write(' &lt;/part&gt;\n')
+  XMLfile.write('&lt;/score-partwise&gt;\n')
+  XMLfile.close()
+
+  def fromXML_DOM(self, XMLfile):
+  """
+  Look for tags in XMLfile.
+  """
+  for instTag in XMLfile.getElementsByTagName('part-name'):
+  self.instS = instTag.firstChild.data
+  for measureTag in XMLfile.getElementsByTagName('measure'):
+  measureTag.normalize()
+  for chromaticTag in measureTag.getElementsByTagName('chromatic'):
+  self.transposition = int(chromaticTag.firstChild.data)
+  for soundTag in measureTag.getElementsByTagName('sound'):
+  self.tempo = int(soundTag.getAttribute('tempo'))
+  for timeTag in measureTag.getElementsByTagName('time'):
+  for beatsTag in timeTag.getElementsByTagName('beats'):
+    top = int(beatsTag.firstChild.data)
+  for beatTypeTag in timeTag.getElementsByTagName('beat-type'):
+    bottom = int(beatTypeTag.firstChild.data)
+  mmNum = int(measureTag.getAttribute('number'))
+  measureFromXML = Measure(mmNum, self.transposition)
+  measureFromXML.addVariables(self.config)
+  measureFromXML.setMeter(top, bottom)
+  measureFromXML.tempo = self.tempo
+  measureFromXML.fromXML_DOM(measureTag)
+  measureFromXML.assignXMLtuplet_nums()
+  self.measures.append(measureFromXML)
+
+  def get_all_notes(self):
+  for measure in self.measures:
+  # possibly descend to measure level
+  for note in measure.notes:
+  if not note.pitch == 'X':   # another failsafe
+    self.notes.append(note)
+    self.pitches.append(note.pitch)
+    self.durations.append(note.dur)
+    self.articulations.append(note.artS)
+    self.dynamics.append(note.dynS)
+    self.previous_dyn = note.dynS
+
+  def ly_output(self, config):
+  """Score level."""
+  outputS = ''
+  prev_dyn = 'mp'
+  if len(self.measures):
+  for measure in self.measures:
+  measure.removeDuplicateNotes()
+  temp_measure = Measure(measure.num, measure.transposition)
+  temp_measure.addVariables(config)
+  temp_measure.setMeter(measure.top, measure.bottom)
+  for note in measure.notes:
+    temp_measure.notes.append(note)
+  temp_measure.massageOutput()
+  if temp_measure.checkProperlyFilled():
+    output_measure = temp_measure
+  else:
+    output_measure = measure
+  outputS += output_measure.ly_output(prev_dyn)
+  prev_dyn = measure.previous_dyn_output
+  return outputS
+
+  def makeFeedbackD(self):
+  """
+  Makes the feedBackB dict for mutation.
+  """
+  feedbackD = {} # contains items like {'pitch': -2}, etc.
+  feedbackFileS = ''
+  feedbackFile = open(self.feedbackFileName, 'r')
+  for line in feedbackFile.readlines():
+  if not line.find('end 1 item') == -1:
+  break
+  elif line[0] == '#' or len(line) &lt; 2:
+  pass  # comment or empty, ignore
+  elif not line.find(self.instS) == -1:
+  key = re.split('_', line)[1]
+  key = re.split(' =', key)[0]
+  val = int(re.split(' = ', line)[1])
+  #print '#DEBUG: key =', key, '\tval =', val
+  if key and val:
+    feedbackD[key] = val
+  feedbackFile.close()
+  return feedbackD
+
+  def mutateByFeedback(self, feedbackD):
+  """
+  Incorporates the newer variation-by-feedback setup whereby it occurs 
+  note-by-note within the piece, rather than the old method of simply 
+  changing config file variables before score generation.
+  """
+  doMutationB = 0
+  try:
+  if feedbackD:  # have feedback, proceed
+  doMutationB = 1 
+  except:   # no feedback, therefore don't mutate
+  pass  
+  if doMutationB:
+  self.previous_dyn_output = 'no previous dynamic'
+  for measure in self.measures:
+  measure.previous_dyn_output = self.previous_dyn_output
+  for note in measure.notes:
+    note.mutateByFeedback('art', feedbackD)
+    note.mutateByFeedback('dyn', feedbackD)
+    note.mutateByFeedback('pitch', feedbackD)
+    self.previous_dyn_output = note.dynS
+
+  def mutateByMarkov(self, feedbackD):
+  """
+  Alter stored musical data in 'XMLfile' according to data
+  found in 'feedback', the file containing input taken from
+  the audience during the performance. The specific alterations
+  that they inspire may depend heavily on precedents such as
+  Iannis Xenakis' ideas in 'Formalized Music'.
+  """
+  ##TODO: how do I use feedbackD to affect each note's individual durL?
+  debug_outS = ''
+  markov = Markov()
+  markov.construct('art', self.notes)
+  markov.construct('midi_pitch', self.notes)
+  markov.construct('dyn', self.notes)
+  previous_note = Note(self.transposition)
+  previous_note.artS = ''
+  for measure in self.measures:
+  while not measure.checkProperlyFilled():
+  measure = Measure(self.measures_so_far+1, self.transposition)
+  measure.setMutatingStatus(self.mutatingB)
+  measure.construct(self.tempo, self.previous_dyn, self.has_declared_first_sound)
+  for i in range(len(measure.notes)):
+  note = measure.notes[i]
+  if i &gt; 0:
+    previous_note = measure.notes[i-1]
+  prev_pitch = previous_note.midi_pitch
+  # 2-step, fix wrapping in printed output
+  new_midi_pitch = markov.extract('midi_pitch', prev_pitch)
+  while new_midi_pitch == 0 and random.randrange(100)+1 &gt; restpc:
+    new_midi_pitch = markov.extract('midi_pitch', prev_pitch)
+  try:
+    new_midi_pitch = int(new_midi_pitch)
+  except:
+    new_midi_pitch = 0
+  if new_midi_pitch &gt; 0:
+    new_midi_pitch += 24
+    note.setPitch(new_midi_pitch)
+  else:
+    new_art = markov.extract('art', previous_note.artS)
+    new_dyn = markov.extract('dyn', previous_note.dynS)
+  note.setArticulation(new_art)
+  note.setDynamics(new_dyn, measure.previous_dyn_output)
+
+  def mutateByMarkov2(self, config, feedbackD):
+  """2nd Order Markov chain."""
+  debug_outS = ''
+  markov = Markov()
+  newMeasuresL = []
+  markov.construct2('art', self.notes)
+  markov.construct2('midi_pitch', self.notes)
+  markov.construct2('dur', self.notes)
+  markov.construct2('dyn', self.notes)
+  prevMM = self.measures[self.numMeasuresI-1]
+  prev2MM = self.measures[self.numMeasuresI-2]
+  previous_note = prevMM.notes[-1]
+  previous_note.addVariables(config)
+  try: prev2_note = prevMM.notes[-2]
+  except: prev2_note = prev2MM.notes[-1]
+  prev2_note.addVariables(config)
+  for measure in self.measures:
+  new_measure = Measure(measure.num, self.transposition)
+  new_measure.setMutatingStatus(self.mutatingB)
+  new_measure.setFeedback(feedbackD)
+  new_measure.addVariables(config)
+  new_measure.setMeter(measure.top, measure.bottom)
+  p_note = previous_note # 2-step variables to fix
+  p2_note = prev2_note   # wrapping in printed output
+  new_measure.constructMarkov(self.tempo, p_note, p2_note, markov)
+  while not new_measure.checkProperlyFilled():
+  # generally too long if not preperly filled
+  new_measure = Measure(measure.num, self.transposition)
+  new_measure.setMutatingStatus(self.mutatingB)
+  new_measure.setFeedback(feedbackD)
+  new_measure.addVariables(config)
+  new_measure.setMeter(measure.top, measure.bottom)
+  new_measure.construct(self.tempo, self.previous_dyn, self.has_declared_first_sound)
+  newMeasuresL.append(new_measure)
+  #measure.mutateByMarkov2(markov)
+  self.measures = []
+  for new_measure in newMeasuresL:
+  self.measures.append(new_measure)
+
+  def printclose(self):
+  """
+  Outputs Lilypond ending boilerplate, 
+  including paper definitions and the MIDI block.
+  """
+  outputS = '\n'
+  outputS += '} % end notes\n'
+  paper = Paper()
+  outputS += paper.ly_output(self.tempo)
+  #outputS += '} % end Voice\n'
+  outputS += '} % end score\n'
+  return outputS
+
+  def printopen(self, inst):
+  """Outputs Lilypond starting boilerplate."""
+  outputS = ''
+  outputS += '\\score { \n'
+  outputS += '\\notes { \n'
+  outputS += '  \\stemBoth\n'
+
+  # BEGIN Dynamics spacing
+  #outputS += "  \\override Voice.DynamicText "
+  #outputS += "#'no-spacing-rods = ##t\n"
+  #outputS += "  \\override Voice.DynamicText "
+  #outputS += "#'X-extent = #'(-12 . 12)\n"
+  outputS += "  \\override Voice.DynamicText "
+  outputS += "#'font-size = #-2\n"
+  outputS += "  \\override Voice.SpacingSpanner\n"
+  outputS += "   #'shortest-duration-space = #50.0\n"
+  #outputS += "   #'spacing-increment = #30.0\n"
+  outputS += "  \\tupletUp \n"
+  # this ensures that the tuplet bracket does 
+  # not collide with dynamic indicators
+  #outputS += "  \\override Voice.SpacingSpanner "
+  
+  outputS += '  \\set autoBeaming = ##t\n'
+
+  outputS += '  \\override Staff.DynamicLineSpanner '
+  outputS += '#\'padding = #2.4\n'
+  outputS += '  \\override Staff.TupletBracket '
+  outputS += '#\'padding = #1.8\n'
+  outputS += '  \\set midiInstrument = '
+  if inst == 'sax':
+  outputS += '"soprano sax"'
+  elif inst == 'clar':
+  outputS += '"clarinet"'
+  elif inst == 'vn':
+  outputS += '"violin"'
+  outputS += '\n'
+  outputS += '  \n'
+  if self.tempo &gt; 0:
+  outputS += '  \\override Score.MetronomeMark '
+  outputS += '#\'padding = #5\n'
+  outputS += '  \\tempo 8=' + repr(self.tempo) + '\n'
+  outputS += '  \\clef treble\n'
+  return outputS
+
+  def rememberDynamics(self, measure):
+  self.previous_dyn = measure.previous_dyn_output
+
+  def setTempo(self, min_tempo, max_tempo):
+  """
+  Uniform distribution across the range. For fixed 
+  values, simply use the same value twice. 
+  Values are eighth notes per minute.
+  """
+  self.tempo = random.randrange(min_tempo, max_tempo+1)
+
+</pre></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch13.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="pt03.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="pt04.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 13. Piece </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Part IV. 
+<span class="application">Python</span> Scripts and Config Files
+</td></tr></table></div></body></html>

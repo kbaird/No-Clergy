@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" //><title>Chapter 2.  Performance</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="No Clergy" /><link rel="up" href="pt01.html" title="Part I.  Setup and Performance" /><link rel="prev" href="ch01.html" title="Chapter 1.  Setup" /><link rel="next" href="pt02.html" title="Part II.  Sample Notated Output" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 2. 
+Performance
+</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch01.html">Prev</a> </td><th width="60%" align="center">Part I. 
+Setup and Performance
+</th><td width="20%" align="right"> <a accesskey="n" href="pt02.html">Next</a></td></tr></table><hr /></div><div class="chapter" title="Chapter 2.  Performance"><div class="titlepage"><div><div><h2 class="title"><a id="idp18362624"></a>Chapter 2. 
+Performance
+</h2></div></div></div><a id="performance"></a><p>
+When <a class="link" href="ch26.html#setup_sh"><code class="filename">~/setup.sh</code></a>
+is executed, initial random values are used to
+generate a first pass of musical notation for each of the performers. The semantic
+musical data are stored externally in a
+<a class="ulink" href="http://musicxml.org/" target="_top">MusicXML</a> file, and are also rendered into
+an image file using <acronym title="">GNU</acronym>
+<a class="ulink" href="http://lilypond.org/" target="_top"><span class="application">Lilypond</span></a>.
+</p><p>
+During the performance, audience members input data into their web forms
+as desired. This data (along with internal data resulting from analysis
+of the results of the initial run of the script) is then used to create
+subsequent generations of musical data.  Each performer plays the
+notation presented on his or her screen until
+<a class="link" href="ch02.html#ending_the_piece">the end of the piece</a>.
+</p><p>
+The 2nd and later sets of musical notation are generated with the script 
+<a class="link" href="ch25.html#noclergy_sh"><code class="filename">~/noclergy.sh</code></a>,
+which reads both the audience feedback data and the previous musical
+material stored in the MusicXML files in order to generate each
+successive page of notation for each performer. It also moves old files
+into a storage location, ensuring that any later runs of the script will
+be based on the freshest available data.
+</p><a id="ending_the_piece"></a><p title="Ending the Piece"><strong>Ending the Piece. </strong>
+The premiere will simply run each script a fixed number of times, ending
+the piece when there are no more new pages of notation. Other
+performances could simply loop, or have a cutoff condition (ending the
+piece when the rest-to-note ratio rises above a certain point, for
+example). The looping option would be especially appropriate for
+alterations of the piece to use machine-generated sounds 
+(<span class="application">Csound</span>, or
+<span class="application">Max/MSP</span>, for example), rather than live 
+acoustic performances.
+
+</p></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch01.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="pt01.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="pt02.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 1. 
+Setup
+ </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Part II. 
+Sample Notated Output
+</td></tr></table></div></body></html>

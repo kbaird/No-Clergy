@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" //><title>Chapter 13. Piece</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="No Clergy" /><link rel="up" href="pt03.html" title="Part III.  Python Modules" /><link rel="prev" href="ch12.html" title="Chapter 12. Paper" /><link rel="next" href="ch14.html" title="Chapter 14. Score" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 13. Piece</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch12.html">Prev</a> </td><th width="60%" align="center">Part III. 
+<span class="application">Python</span> Modules
+</th><td width="20%" align="right"> <a accesskey="n" href="ch14.html">Next</a></td></tr></table><hr /></div><div class="chapter" title="Chapter 13. Piece"><div class="titlepage"><div><div><h2 class="title"><a id="idp18655112"></a>Chapter 13. Piece</h2></div></div></div><pre class="programlisting">
+
+#!/usr/bin/env python
+# noclergy_piece.py
+
+# Copyright (C) 2004 Kevin C. Baird
+#
+# This file is part of 'No Clergy'.
+#
+# No Clergy is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+class Piece:
+  """
+  The entire piece. This object exists to hold states and methods for
+  cross-fertilizing mutations between instruments.
+  """
+
+  def __init__(self, scoreL):
+  self.notes = []
+  self.pitches = []
+  self.durations = []
+  self.articulations = []
+  self.dynamics = []
+  self.scoreL = scoreL
+
+  def get_all_notes(self):
+  for score in self.scoreL:
+  score.get_all_notes()
+  self.notes.append(score.notes)
+  self.pitches.append(score.pitches)
+  self.durations.append(score.durations)
+  self.articulations.append(score.articulations)
+  self.dynamics.append(score.dynamics)
+
+  def sieve_pitches(self, scoreL, pitch_list, vary_amp=3):
+  for score in scoreL:
+  for measure in score.measures:
+  for note in measure.notes:
+    if not note.pitch == 'r':
+    if not pitch_list.count(note.midi_pitch % 12) &gt; 0:
+    vary = random.randrange(-vary_amp, vary_amp-1)
+    if vary == 0:
+    vary += 1
+    note.setPitch(note.midi_pitch + vary)
+
+  def sort_notes_in_mm(self, scoreL):
+  for score in scoreL:
+  for measure in score.measures:
+  measure.notes.sort()
+
+</pre></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch12.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="pt03.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch14.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 12. Paper </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 14. Score</td></tr></table></div></body></html>

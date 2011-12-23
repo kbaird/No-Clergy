@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" //><title>Chapter 8. Markov</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="No Clergy" /><link rel="up" href="pt03.html" title="Part III.  Python Modules" /><link rel="prev" href="ch07.html" title="Chapter 7. Header" /><link rel="next" href="ch09.html" title="Chapter 9. Measure" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 8. Markov</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch07.html">Prev</a> </td><th width="60%" align="center">Part III. 
+<span class="application">Python</span> Modules
+</th><td width="20%" align="right"> <a accesskey="n" href="ch09.html">Next</a></td></tr></table><hr /></div><div class="chapter" title="Chapter 8. Markov"><div class="titlepage"><div><div><h2 class="title"><a id="idp18609848"></a>Chapter 8. Markov</h2></div></div></div><pre class="programlisting">
+
+#!/usr/bin/env python
+# noclergy_markov.py
+
+# Copyright (C) 2004 Kevin C. Baird
+#
+# This file is part of 'No Clergy'.
+#
+# No Clergy is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+import random
+
+class Markov:
+  """
+  A set of operations dealing with Markov chains,
+  organized into a single Object.
+  """
+
+  def __init__(self):
+  """
+  Create empty dictionaries for each note attribute.
+  """
+  self.pcD = {}
+  self.midi_pitchD = {}
+  self.artD = {}
+  self.dynD = {}
+  self.durD = {}
+
+  def check(self, attr):
+  """
+  Double-check contents of the Markov Chain.
+  """
+  if attr == 'dur':
+  dict = self.durD
+  if attr == 'dyn':
+  dict = self.dynD
+  elif attr == 'art':
+  dict = self.artD
+  elif attr == 'midi_pitch':
+  dict = self.midi_pitchD
+  itemL = dict.items()
+  # rewrite to accomodate 2nd order chain
+  for item in itemL:
+  (key, values) = item
+  print key, '=&gt;',
+  for value in values:
+  print value,
+  print
+
+  def construct(self, attr, notesL):
+  """
+  Takes in a list of notes and an attribute to construct a
+  Markov chain of, such as 'pc' for pitch class.
+  """
+  if attr == 'pc':
+  dict = self.pcD
+  elif attr == 'midi_pitch':
+  dict = self.midi_pitchD
+  elif attr == 'art':
+  dict = self.artD
+  elif attr == 'dur':
+  dict = self.durD
+  elif attr == 'dyn':
+  dict = self.dynD
+  for i in range(len(notesL)-1):
+  note = notesL[i+1]
+  previous_note = notesL[i]
+  if attr == 'pc':
+  value = note.pc
+  previous_value = previous_note.pc
+  elif attr == 'midi_pitch':
+  value = note.midi_pitch
+  previous_value = previous_note.midi_pitch
+  elif attr == 'art':
+  value = note.artS
+  previous_value = previous_note.artS
+  elif attr == 'dyn':
+  value = note.dynS
+  previous_value = previous_note.dynS
+  elif attr == 'dur':
+  value = note.dur
+  previous_value = previous_note.dur
+  try:
+  dict[previous_value].append(value)
+  except:
+  dict[previous_value] = []
+
+  def construct2(self, attr, notesL):
+  """
+  Takes in a list of notes and an attribute to construct a
+  2nd-order Markov chain of, such as 'pc' for pitch class.
+  """
+  if attr == 'pc':
+  dict = self.pcD
+  elif attr == 'midi_pitch':
+  dict = self.midi_pitchD
+  elif attr == 'art':
+  dict = self.artD
+  elif attr == 'dur':
+  dict = self.durD
+  elif attr == 'dyn':
+  dict = self.dynD
+  for i in range(len(notesL)-1):
+  note = notesL[i+1]
+  previous_note = notesL[i]
+  try: prev2_note = notesL[i-1]
+  except: prev2_note = Note(self.transposition)
+  if attr == 'pc':
+  value = note.pc
+  previous_value = previous_note.pc
+  try: prev2_value = prev2_note.pc
+  except: pass
+  elif attr == 'midi_pitch':
+  value = note.midi_pitch
+  previous_value = previous_note.midi_pitch
+  try: prev2_value = prev2_note.midi_pitch
+  except: pass
+  elif attr == 'art':
+  value = note.artS
+  previous_value = previous_note.artS
+  try: prev2_value = prev2_note.artS
+  except: pass
+  elif attr == 'dur':
+  value = note.dur
+  previous_value = previous_note.dur
+  try: prev2_value = prev2_note.dur
+  except: pass
+  elif attr == 'dyn':
+  value = note.dynS
+  previous_value = previous_note.dynS
+  try: prev2_value = prev2_note.dynS
+  except: pass
+  try:
+  dict[prev2_value][previous_value].append(value)
+  except:
+  try:
+    dict[prev2_value][previous_value] = []
+    dict[prev2_value][previous_value].append(value)
+  except:
+    dict[prev2_value] = {}
+    dict[prev2_value][previous_value] = []
+    dict[prev2_value][previous_value].append(value)
+  pass
+
+  def extract(self, attr, value):
+  """
+  Takes in an attribute type and value, and outputs a 'next value',
+  determined by Markov Chain.
+  """
+  if attr == 'art':
+  dict = self.artD
+  elif attr == 'dur':
+  dict = self.durD
+  elif attr == 'dyn':
+  dict = self.dynD
+  elif attr == 'midi_pitch':
+  dict = self.midi_pitchD
+  ## et cetera
+  try:
+  next_value = random.choice(dict[value])
+  except:
+  #next_value = ' % tried to read from ' + value + '\n'
+  next_value = ' '
+  return next_value
+
+  def extract2(self, attr, previous_value, value):
+  """
+  Takes in an attribute type and value, and outputs a 'next value',
+  determined by Markov Chain.
+  """
+  if attr == 'art':
+  dict = self.artD
+  elif attr == 'dur':
+  dict = self.durD
+  elif attr == 'dyn':
+  dict = self.dynD
+  elif attr == 'midi_pitch':
+  dict = self.midi_pitchD
+  ## et cetera
+  #print 'DEBUG:\n', dict
+  try:
+  next_value = random.choice(dict[previous_value][value])
+  except:
+  if attr == 'midi_pitch':
+  next_value = 0
+  else:
+  next_value = ' '
+  return next_value
+
+</pre></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch07.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="pt03.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch09.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 7. Header </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 9. Measure</td></tr></table></div></body></html>

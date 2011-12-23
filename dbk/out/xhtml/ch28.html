@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" //><title>Chapter 28.  flush_feedback.sh</title><meta name="generator" content="DocBook XSL Stylesheets V1.75.2" /><link rel="home" href="index.html" title="No Clergy" /><link rel="up" href="pt05.html" title="Part V.  Bash Shell Scripts" /><link rel="prev" href="ch27.html" title="Chapter 27.  flush_dvi_pdf_ps.sh" /><link rel="next" href="ch29.html" title="Chapter 29.  mv_oldfiles.sh" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 28. 
+flush_feedback.sh
+</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch27.html">Prev</a> </td><th width="60%" align="center">Part V. 
+Bash Shell Scripts
+</th><td width="20%" align="right"> <a accesskey="n" href="ch29.html">Next</a></td></tr></table><hr /></div><div class="chapter" title="Chapter 28.  flush_feedback.sh"><div class="titlepage"><div><div><h2 class="title"><a id="idp19058984"></a>Chapter 28. 
+flush_feedback.sh
+</h2></div></div></div><pre class="programlisting">
+#! /bin/bash
+# flush_feedback.sh
+
+# Copyright (C) 2004 Kevin C. Baird
+#
+# This file is part of 'No Clergy'.
+#
+# No Clergy is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+# Kevin can be reached at 
+# kcbaird@world.oberlin.edu or 
+# http://kevinbaird.net
+
+configDir='/var/www/noclergy'
+
+rm $configDir/feedback.html 2&gt; /dev/null
+cp NoClergy/feedback.html.orig $configDir/feedback.html
+chmod a+w $configDir/feedback.html
+# makes the feedback file writable by everyone. 
+# Otherwise, how could they enter any feedback?
+
+
+</pre></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch27.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="pt05.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ch29.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 27. 
+flush_dvi_pdf_ps.sh
+ </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 29. 
+mv_oldfiles.sh
+</td></tr></table></div></body></html>
